@@ -1,0 +1,6 @@
+.DS_Store
+
+# Secrets: keep API keys out of git
+.env
+.env.*
+!.env.example

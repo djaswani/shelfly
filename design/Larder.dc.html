@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>
+body{margin:0;background:#E8E3D9;font-family:'Figtree',system-ui,sans-serif;color:#1E1A16;-webkit-font-smoothing:antialiased}
+a{color:#2D6A4B}a:hover{color:#1E4C35}
+i{font-family:'Material Symbols Rounded';font-style:normal;font-weight:normal;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;display:inline-block;direction:ltr;font-feature-settings:'liga';-webkit-font-smoothing:antialiased;user-select:none}
+input,button{font-family:inherit}
+*{scrollbar-width:none}*::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:56px;padding:40px 24px;box-sizing:border-box">
+<sc-if value="{{ showIndex }}" hint-placeholder-val="{{ true }}">
+<div style="width:190px;display:flex;flex-direction:column;gap:2px">
+<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;margin:0 0 16px 12px">Larder</div>
+<sc-for list="{{ screens }}" as="sc" hint-placeholder-count="16">
+<button onClick="{{ sc.go }}" style="text-align:left;border:0;background:{{ sc.bg }};color:{{ sc.c }};font-size:14px;font-weight:500;padding:8px 12px;border-radius:10px;cursor:pointer">{{ sc.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+
+<x-import component-from-global-scope="IOSDevice" from="./ios-frame.jsx" hint-size="402px,874px">
+<div style="position:relative;z-index:0;height:100%;overflow:hidden;background:#F6F3ED;font-family:'Figtree',sans-serif;color:#1E1A16">
+
+<!-- HOME -->
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div data-screen-label="Home" style="position:absolute;inset:0 0 84px 0;overflow-y:auto;padding:62px 20px 28px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:24px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="font-size:15px;font-weight:500;color:#736B60">Sunday, October 18</div>
+<button onClick="{{ openSettings }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#E1ECE4;color:#2D6A4B;font-weight:700;font-size:14px;cursor:pointer">DJ</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.025em">Use soon</h1>
+<button onClick="{{ goKitchen }}" style="border:0;background:none;color:#2D6A4B;font-weight:600;font-size:15px;cursor:pointer;padding:0">See all</button>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ useSoon }}" as="it" hint-placeholder-count="5">
+<div onClick="{{ it.open }}" style-active="background:#F7F4EE" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:{{ it.border }};cursor:pointer">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.name }}</div>
+<div style="display:flex;align-items:center;gap:7px;font-size:13.5px;color:#736B60">
+<sc-if value="{{ it.hasMeter }}"><span style="display:flex;gap:2px;opacity:{{ it.meterOp }}"><span style="width:6px;height:10px;border-radius:2px;background:{{ it.m1 }}"></span><span style="width:6px;height:10px;border-radius:2px;background:{{ it.m2 }}"></span><span style="width:6px;height:10px;border-radius:2px;background:{{ it.m3 }}"></span></span></sc-if>
+<span>{{ it.sub }}</span>
+</div>
+</div>
+<div style="font-size:14px;font-weight:600;color:{{ it.dayColor }};white-space:nowrap">{{ it.dayText }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ hasSweep }}" hint-placeholder-val="{{ true }}">
+<div style="background:#2D6A4B;border-radius:22px;padding:18px 18px 18px 20px;display:flex;align-items:center;gap:14px;color:#fff">
+<div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;flex:none"><i style="font-size:24px">swipe</i></div>
+<div style="flex:1;min-width:0">
+<div style="font-size:17px;font-weight:600">Sunday sweep</div>
+<div style="font-size:14px;color:#D6E7DC;margin-top:2px">{{ sweepCount }} items to check</div>
+</div>
+<button onClick="{{ startSweep }}" style="height:40px;padding:0 18px;border-radius:20px;border:0;background:#fff;color:#2D6A4B;font-weight:700;font-size:15px;cursor:pointer">Start</button>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600;letter-spacing:-0.02em">Tonight</h2>
+<div onClick="{{ tonight.open }}" style-active="transform:scale(.99)" style="background:#fff;border-radius:20px;padding:12px;display:flex;gap:14px;align-items:center;cursor:pointer">
+<div style="width:92px;height:92px;border-radius:14px;flex:none;background:repeating-linear-gradient(135deg,#EDE7DC 0 9px,#E5DED1 9px 18px);display:flex;align-items:center;justify-content:center;font:500 10px ui-monospace,Menlo,monospace;color:#8A8174">dish photo</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:17px;font-weight:600;line-height:1.25">{{ tonight.title }}</div>
+<div style="font-size:13.5px;color:#736B60">{{ tonight.meta }}</div>
+<div style="font-size:13.5px;color:#B5461F;font-weight:500;text-wrap:pretty">{{ tonight.expText }}</div>
+</div>
+</div>
+</div>
+<div onClick="{{ openRecap }}" style="background:#fff;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:14px;cursor:pointer">
+<i style="font-size:24px;color:#2D6A4B">bar_chart</i>
+<div style="flex:1">
+<div style="font-size:16px;font-weight:600">October</div>
+<div style="font-size:13.5px;color:#736B60;margin-top:2px">{{ recapLine }}</div>
+</div>
+<i style="font-size:22px;color:#A39A8E">chevron_right</i>
+</div>
+</div>
+</sc-if>
+
+<!-- KITCHEN -->
+<sc-if value="{{ isKitchen }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Kitchen" style="position:absolute;inset:0 0 84px 0;overflow-y:auto;padding:62px 20px 28px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:16px">
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.025em">Kitchen</h1>
+<div style="display:flex;align-items:center;gap:8px;background:#ECE6DC;border-radius:14px;padding:0 12px;height:44px;flex:none">
+<i style="font-size:21px;color:#736B60">search</i>
+<input value="{{ q }}" onChange="{{ onQ }}" placeholder="Search everything" style="flex:1;min-width:0;border:0;background:transparent;font-size:16px;outline:none;color:#1E1A16">
+</div>
+<div style="display:flex;gap:8px;flex:none;overflow-x:auto;overflow-y:hidden;min-height:fit-content;margin:0 -20px;padding:0 20px;scrollbar-width:none">
+<sc-for list="{{ locTabs }}" as="t" hint-placeholder-count="4">
+<button onClick="{{ t.pick }}" style="flex:none;height:38px;padding:0 15px;border-radius:19px;border:0;background:{{ t.bg }};color:{{ t.c }};font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer">{{ t.name }}<span style="font-weight:500;opacity:.75">{{ t.count }}</span></button>
+</sc-for>
+<sc-if value="{{ addingLoc }}">
+<div style="flex:none;height:38px;display:flex;align-items:center;gap:4px;padding:0 4px 0 14px;border-radius:19px;background:#fff">
+<input value="{{ newLoc }}" onChange="{{ onNewLoc }}" onKeyDown="{{ newLocKey }}" placeholder="Name" autofocus="{{ true }}" style="width:110px;border:0;outline:none;font-size:15px;background:transparent">
+<button onClick="{{ saveLoc }}" style="width:30px;height:30px;border-radius:50%;border:0;background:#2D6A4B;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:18px">check</i></button>
+</div>
+</sc-if>
+<sc-if value="{{ notAddingLoc }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ startAddLoc }}" style="flex:none;width:38px;height:38px;border-radius:19px;border:1.5px dashed #C9C0B2;background:transparent;color:#736B60;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:20px">add</i></button>
+</sc-if>
+</div>
+<sc-if value="{{ hasKItems }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ kItems }}" as="it" hint-placeholder-count="8">
+<div onClick="{{ it.open }}" style-active="background:#F7F4EE" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:{{ it.border }};cursor:pointer">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+<div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.name }}</div>
+<div style="display:flex;align-items:center;gap:7px;font-size:13.5px;color:#736B60">
+<sc-if value="{{ it.hasMeter }}"><span style="display:flex;gap:2px;opacity:{{ it.meterOp }}"><span style="width:6px;height:10px;border-radius:2px;background:{{ it.m1 }}"></span><span style="width:6px;height:10px;border-radius:2px;background:{{ it.m2 }}"></span><span style="width:6px;height:10px;border-radius:2px;background:{{ it.m3 }}"></span></span></sc-if>
+<span>{{ it.sub }}</span>
+</div>
+</div>
+<div style="font-size:14px;font-weight:600;color:{{ it.dayColor }};white-space:nowrap">{{ it.dayText }}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ kEmpty }}">
+<div style="padding:48px 0;display:flex;flex-direction:column;align-items:center;gap:14px">
+<div style="font-size:16px;color:#736B60">Nothing here yet</div>
+<button onClick="{{ openAdd }}" style="height:44px;padding:0 20px;border-radius:22px;border:0;background:#2D6A4B;color:#fff;font-weight:600;font-size:15px;cursor:pointer">Add food</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<!-- LIST -->
+<sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="List" style="position:absolute;inset:0 0 84px 0;overflow-y:auto;padding:62px 20px 100px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between">
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.025em">List</h1>
+<span style="font-size:15px;color:#736B60">{{ listCount }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:0 6px 0 14px;height:48px">
+<input value="{{ listText }}" onChange="{{ onListText }}" onKeyDown="{{ listKey }}" placeholder="Add an item" style="flex:1;min-width:0;border:0;background:transparent;font-size:16px;outline:none;color:#1E1A16">
+<button onClick="{{ addListText }}" style="width:36px;height:36px;border-radius:50%;border:0;background:#2D6A4B;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">add</i></button>
+</div>
+<sc-if value="{{ hasSugg }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 4px">
+<span style="font-size:14px;font-weight:600;color:#736B60">Running low at home</span>
+<button onClick="{{ addAllSugg }}" style="border:0;background:none;color:#2D6A4B;font-weight:600;font-size:14px;cursor:pointer;padding:0">Add all</button>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ sugg }}" as="g" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 10px 10px 16px;border-top:{{ g.border }}">
+<span style="flex:1;font-size:16px;font-weight:500">{{ g.name }}</span>
+<span style="font-size:13px;font-weight:600;color:#B5461F">{{ g.lvl }}</span>
+<button onClick="{{ g.add }}" style="width:34px;height:34px;border-radius:50%;border:0;background:#E1ECE4;color:#2D6A4B;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:20px">add</i></button>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<sc-for list="{{ listGroups }}" as="grp" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#736B60;padding:0 4px">{{ grp.aisle }}</span>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ grp.rows }}" as="r" hint-placeholder-count="2">
+<div onClick="{{ r.toggle }}" style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:{{ r.border }};cursor:pointer">
+<span style="width:24px;height:24px;border-radius:50%;flex:none;border:2px solid {{ r.cb }};background:{{ r.cbg }};display:flex;align-items:center;justify-content:center;box-sizing:border-box"><sc-if value="{{ r.checked }}"><i style="font-size:16px;color:#fff">check</i></sc-if></span>
+<div style="flex:1;min-width:0">
+<div style="font-size:16px;font-weight:500;color:{{ r.nc }};text-decoration:{{ r.deco }}">{{ r.name }}</div>
+<sc-if value="{{ r.hasQty }}"><div style="font-size:13px;color:#736B60;margin-top:2px">{{ r.qty }}</div></sc-if>
+</div>
+<span style="font-size:13px;font-weight:600;color:{{ r.hc }};white-space:nowrap">{{ r.have }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ showPutAway }}">
+<button onClick="{{ putAway }}" style="position:absolute;left:20px;right:20px;bottom:100px;z-index:15;height:54px;border-radius:16px;border:0;background:#1E1A16;color:#fff;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 8px 20px rgba(30,26,22,.18)"><i style="font-size:22px">kitchen</i>{{ putAwayText }}</button>
+</sc-if>
+
+<!-- COOK -->
+<sc-if value="{{ isCook }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Cook" style="position:absolute;inset:0 0 84px 0;overflow-y:auto;padding:62px 20px 28px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:16px">
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.025em">Cook</h1>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ cookFilters }}" as="f" hint-placeholder-count="3">
+<button onClick="{{ f.pick }}" style="height:36px;padding:0 15px;border-radius:18px;border:0;background:{{ f.bg }};color:{{ f.c }};font-size:14.5px;font-weight:600;cursor:pointer">{{ f.label }}</button>
+</sc-for>
+</div>
+<button onClick="{{ genIdeas }}" style="display:flex;align-items:center;gap:12px;background:#fff;border:0;border-radius:18px;padding:12px 16px 12px 12px;cursor:pointer;text-align:left">
+<span style="width:38px;height:38px;border-radius:50%;background:#E1ECE4;color:#2D6A4B;display:flex;align-items:center;justify-content:center;flex:none"><i style="font-size:22px">refresh</i></span>
+<span style="flex:1;font-size:16px;font-weight:600;color:#1E1A16">New ideas from your kitchen</span>
+<span style="font-size:13px;color:#736B60">{{ ideasLeftText }}</span>
+</button>
+<sc-for list="{{ recipeCards }}" as="rc" hint-placeholder-count="3">
+<div onClick="{{ rc.open }}" style-active="transform:scale(.99)" style="background:#fff;border-radius:20px;overflow:hidden;cursor:pointer">
+<div style="position:relative;height:136px;background:repeating-linear-gradient(135deg,#EDE7DC 0 9px,#E5DED1 9px 18px);display:flex;align-items:center;justify-content:center;font:500 11px ui-monospace,Menlo,monospace;color:#8A8174">dish photo
+<sc-if value="{{ rc.isNew }}"><span style="position:absolute;top:12px;left:12px;background:#fff;color:#1E1A16;font:600 12px 'Figtree',sans-serif;padding:5px 10px;border-radius:12px">New idea</span></sc-if>
+</div>
+<div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px">
+<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:19px;font-weight:600;letter-spacing:-0.01em">{{ rc.title }}</div>
+<div style="font-size:13.5px;color:#736B60">{{ rc.meta }}</div>
+<sc-if value="{{ rc.hasExp }}"><div style="font-size:13.5px;color:#B5461F;font-weight:500">{{ rc.expText }}</div></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<!-- TAB BAR -->
+<div style="position:absolute;left:0;right:0;bottom:0;height:86px;background:rgba(255,255,255,.96);border-top:1px solid #ECE6DC;display:flex;align-items:flex-start;justify-content:space-around;padding:8px 4px 0;box-sizing:border-box;z-index:20">
+<button onClick="{{ tabHome }}" style="width:64px;border:0;background:none;padding:2px 0 0;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ cHome }};cursor:pointer"><i style="font-size:26px;font-variation-settings:'FILL' {{ fHome }}">home</i><span style="font-size:11px;font-weight:600">Home</span></button>
+<button onClick="{{ tabKitchen }}" style="width:64px;border:0;background:none;padding:2px 0 0;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ cKitchen }};cursor:pointer"><i style="font-size:26px;font-variation-settings:'FILL' {{ fKitchen }}">kitchen</i><span style="font-size:11px;font-weight:600">Kitchen</span></button>
+<button onClick="{{ openAdd }}" aria-label="Add food" style="width:54px;height:54px;border-radius:50%;border:0;background:#2D6A4B;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:-2px;cursor:pointer;box-shadow:0 4px 12px rgba(30,26,22,.16)" style-active="transform:scale(.94)"><i style="font-size:30px">add</i></button>
+<button onClick="{{ tabList }}" style="width:64px;border:0;background:none;padding:2px 0 0;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ cList }};cursor:pointer"><i style="font-size:26px;font-variation-settings:'FILL' {{ fList }}">shopping_basket</i><span style="font-size:11px;font-weight:600">List</span></button>
+<button onClick="{{ tabCook }}" style="width:64px;border:0;background:none;padding:2px 0 0;display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ cCook }};cursor:pointer"><i style="font-size:26px;font-variation-settings:'FILL' {{ fCook }}">skillet</i><span style="font-size:11px;font-weight:600">Cook</span></button>
+</div>
+
+<!-- ADD -->
+<sc-if value="{{ ovAdd }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Add food" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;overflow-y:auto;padding:62px 20px {{ addPadB }};box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:18px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:32px;font-weight:600;letter-spacing:-0.025em">Add food</h1>
+<button onClick="{{ closeAll }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">close</i></button>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+<button onClick="{{ openScan }}" style="background:#2D6A4B;color:#fff;border:0;border-radius:20px;padding:16px;height:118px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;cursor:pointer"><i style="font-size:30px">barcode_scanner</i><span style="font-size:16px;font-weight:600">Scan barcode</span></button>
+<button onClick="{{ openReceipt }}" style="background:#fff;color:#1E1A16;border:0;border-radius:20px;padding:16px;height:118px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;cursor:pointer"><i style="font-size:30px;color:#2D6A4B">receipt_long</i><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Scan receipt</span><span style="font-size:12.5px;color:#736B60">{{ receiptLeftText }}</span></span></button>
+</div>
+<div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:14px;padding:0 6px 0 14px;height:48px">
+<input value="{{ addText }}" onChange="{{ onAddText }}" onKeyDown="{{ addKey }}" placeholder="Type an item" style="flex:1;min-width:0;border:0;background:transparent;font-size:16px;outline:none;color:#1E1A16">
+<button onClick="{{ addTyped }}" style="width:36px;height:36px;border-radius:50%;border:0;background:#2D6A4B;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">add</i></button>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex:none;overflow-x:auto;overflow-y:hidden;min-height:fit-content;margin:0 -20px;padding:0 20px;scrollbar-width:none">
+<span style="font-size:14px;font-weight:600;color:#736B60;flex:none;margin-right:2px">Put in</span>
+<sc-for list="{{ addLocs }}" as="l" hint-placeholder-count="3">
+<button onClick="{{ l.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:0;background:{{ l.bg }};color:{{ l.c }};font-size:14px;font-weight:600;cursor:pointer">{{ l.name }}</button>
+</sc-for>
+</div>
+<button onClick="{{ openLeftover }}" style="display:flex;align-items:center;gap:12px;background:#fff;border:0;border-radius:18px;padding:12px 14px;cursor:pointer;text-align:left">
+<span style="width:38px;height:38px;border-radius:50%;background:#F3E3D9;color:#B5461F;display:flex;align-items:center;justify-content:center;flex:none"><i style="font-size:22px">takeout_dining</i></span>
+<span style="flex:1;font-size:16px;font-weight:600;color:#1E1A16">Leftovers</span>
+<i style="font-size:22px;color:#A39A8E">chevron_right</i>
+</button>
+<sc-for list="{{ chipGroups }}" as="cg" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="font-size:14px;font-weight:600;color:#736B60">{{ cg.title }}</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ cg.chips }}" as="ch" hint-placeholder-count="6">
+<button onClick="{{ ch.tap }}" style="height:38px;padding:0 14px;border-radius:19px;border:1.5px solid {{ ch.bd }};background:{{ ch.bg }};color:{{ ch.c }};font-size:15px;font-weight:500;display:flex;align-items:center;gap:5px;cursor:pointer"><sc-if value="{{ ch.on }}"><i style="font-size:17px">check</i></sc-if>{{ ch.n }}</button>
+</sc-for>
+</div>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ hasAddSel }}">
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:31;background:#fff;border-radius:26px 26px 0 0;box-shadow:0 -6px 24px rgba(30,26,22,.10);padding:16px 20px 36px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:15px;font-weight:600">{{ addSelTitle }}</span>
+<button onClick="{{ clearAddSel }}" style="border:0;background:none;color:#736B60;font-size:14px;font-weight:600;cursor:pointer;padding:0">Clear</button>
+</div>
+<div style="max-height:186px;overflow-y:auto;display:flex;flex-direction:column">
+<sc-for list="{{ addRows }}" as="ar" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:{{ ar.border }};flex:none">
+<span style="flex:1;min-width:0;font-size:16px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ar.n }}</span>
+<span style="display:flex;align-items:center;gap:4px;flex:none"><button onClick="{{ ar.dc.dec }}" aria-label="Earlier" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">remove</i></button><div onClick="{{ ar.dc.pick }}" role="button" style="position:relative;height:32px;padding:0 10px;border-radius:9px;background:#EEE9E0;color:#1E1A16;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:16px;color:#736B60">calendar_today</i>{{ ar.dc.short }}<input type="date" value="{{ ar.dc.iso }}" onChange="{{ ar.dc.onPick }}" tabindex="-1" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;padding:0;margin:0"></div><button onClick="{{ ar.dc.inc }}" aria-label="Later" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">add</i></button></span>
+<button onClick="{{ ar.remove }}" aria-label="Remove" style="width:28px;height:32px;border:0;background:none;color:#A39A8E;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:20px">close</i></button>
+</div>
+</sc-for>
+</div>
+<button onClick="{{ commitAdd }}" style="height:54px;border-radius:16px;border:0;background:#1E1A16;color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px;flex:none">{{ addBtnText }}</button>
+</div>
+</sc-if>
+<sc-if value="{{ leftoverOpen }}">
+<div onClick="{{ closeLeftover }}" style="position:absolute;inset:0;z-index:35;background:rgba(30,26,22,.36)"></div>
+<div data-screen-label="Leftovers" style="position:absolute;left:0;right:0;bottom:0;z-index:36;background:#F6F3ED;border-radius:28px 28px 0 0;padding:10px 20px 40px;display:flex;flex-direction:column;gap:16px">
+<div style="width:40px;height:5px;border-radius:3px;background:#D6CEC1;align-self:center"></div>
+<h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:600;letter-spacing:-0.02em">Leftovers</h2>
+<input value="{{ loName }}" onChange="{{ onLoName }}" placeholder="What is it?" style="height:50px;border-radius:14px;border:0;background:#fff;padding:0 14px;font-size:16px;outline:none;color:#1E1A16">
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#736B60">Made</span>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ loMadeOpts }}" as="o" hint-placeholder-count="3">
+<button onClick="{{ o.pick }}" style="flex:1;height:40px;border-radius:12px;border:0;background:{{ o.bg }};color:{{ o.c }};font-size:15px;font-weight:600;cursor:pointer">{{ o.label }}</button>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#736B60">Put in</span>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ loLocOpts }}" as="o" hint-placeholder-count="2">
+<button onClick="{{ o.pick }}" style="flex:1;height:40px;border-radius:12px;border:0;background:{{ o.bg }};color:{{ o.c }};font-size:15px;font-weight:600;cursor:pointer">{{ o.label }}</button>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:14px;padding:9px 9px 9px 14px"><span style="font-size:15px;font-weight:600">Good until</span><span style="display:flex;align-items:center;gap:4px;flex:none"><button onClick="{{ loDc.dec }}" aria-label="Earlier" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">remove</i></button><div onClick="{{ loDc.pick }}" role="button" style="position:relative;height:32px;padding:0 10px;border-radius:9px;background:#EEE9E0;color:#1E1A16;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:16px;color:#736B60">calendar_today</i>{{ loDc.short }}<input type="date" value="{{ loDc.iso }}" onChange="{{ loDc.onPick }}" tabindex="-1" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;padding:0;margin:0"></div><button onClick="{{ loDc.inc }}" aria-label="Later" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">add</i></button></span></div>
+<button onClick="{{ saveLeftover }}" style="height:54px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px">Save leftovers</button>
+</div>
+</sc-if>
+</sc-if>
+
+<!-- SCAN BARCODE -->
+<sc-if value="{{ ovScan }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Barcode scan" style="position:absolute;inset:0;z-index:32;background:repeating-linear-gradient(135deg,#1C1A17 0 12px,#181613 12px 24px);color:#fff">
+<div style="position:absolute;top:60px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between">
+<button onClick="{{ back }}" style="width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">close</i></button>
+<span style="font-size:16px;font-weight:600">Scan barcode</span>
+<button onClick="{{ torch }}" style="width:42px;height:42px;border-radius:50%;border:0;background:{{ torchBg }};color:{{ torchC }};display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">flashlight_on</i></button>
+</div>
+<div style="position:absolute;top:120px;left:0;right:0;text-align:center;font:500 11px ui-monospace,Menlo,monospace;color:#7D766C">camera feed</div>
+<div onClick="{{ scanHit }}" style="position:absolute;top:250px;left:50%;transform:translateX(-50%);width:290px;height:180px;border-radius:24px;border:2.5px solid #fff;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;justify-content:center">
+<div style="width:240px;height:2px;background:#E2603A;border-radius:1px"></div>
+</div>
+<sc-if value="{{ scanIdle }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ scanHit }}" aria-label="Capture" style="position:absolute;bottom:64px;left:50%;transform:translateX(-50%);width:74px;height:74px;border-radius:50%;border:4px solid rgba(255,255,255,.4);background:#fff;background-clip:content-box;padding:4px;cursor:pointer"></button>
+</sc-if>
+<sc-if value="{{ scanFound }}">
+<div style="position:absolute;left:0;right:0;bottom:0;background:#F6F3ED;color:#1E1A16;border-radius:28px 28px 0 0;padding:10px 20px 40px;display:flex;flex-direction:column;gap:16px">
+<div style="width:40px;height:5px;border-radius:3px;background:#D6CEC1;align-self:center"></div>
+<div style="display:flex;gap:14px;align-items:center">
+<div style="width:64px;height:64px;border-radius:14px;flex:none;background:repeating-linear-gradient(135deg,#EDE7DC 0 7px,#E5DED1 7px 14px);display:flex;align-items:center;justify-content:center;font:500 9px ui-monospace,Menlo,monospace;color:#8A8174">product</div>
+<div style="flex:1;min-width:0">
+<div style="font-size:18px;font-weight:600">Oat milk, original</div>
+<div style="font-size:14px;color:#736B60;margin-top:2px">Oatly · 64 fl oz</div>
+</div>
+</div>
+<div style="background:#fff;border-radius:18px;overflow:hidden">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px">
+<span style="font-size:15px;color:#736B60">Put in</span>
+<div style="display:flex;gap:6px">
+<sc-for list="{{ scanLocs }}" as="l" hint-placeholder-count="3">
+<button onClick="{{ l.pick }}" style="height:32px;padding:0 12px;border-radius:16px;border:0;background:{{ l.bg }};color:{{ l.c }};font-size:14px;font-weight:600;cursor:pointer">{{ l.name }}</button>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 10px 10px 16px;border-top:1px solid #ECE6DC">
+<span style="font-size:15px;color:#736B60">Good until</span>
+<span style="display:flex;align-items:center;gap:4px;flex:none"><button onClick="{{ scanDc.dec }}" aria-label="Earlier" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">remove</i></button><div onClick="{{ scanDc.pick }}" role="button" style="position:relative;height:32px;padding:0 10px;border-radius:9px;background:#EEE9E0;color:#1E1A16;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:16px;color:#736B60">calendar_today</i>{{ scanDc.short }}<input type="date" value="{{ scanDc.iso }}" onChange="{{ scanDc.onPick }}" tabindex="-1" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;padding:0;margin:0"></div><button onClick="{{ scanDc.inc }}" aria-label="Later" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">add</i></button></span>
+</div>
+</div>
+<div style="display:flex;gap:10px">
+<button onClick="{{ scanNext }}" style="flex:1;height:54px;border-radius:16px;border:0;background:#EAE4DA;color:#1E1A16;font-size:16px;font-weight:600;cursor:pointer">Add + scan next</button>
+<button onClick="{{ scanAdd }}" style="flex:1;height:54px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:16px;font-weight:600;cursor:pointer">Add</button>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<!-- RECEIPT CAMERA -->
+<sc-if value="{{ ovReceiptCam }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Receipt scan" style="position:absolute;inset:0;z-index:32;background:repeating-linear-gradient(135deg,#1C1A17 0 12px,#181613 12px 24px);color:#fff">
+<div style="position:absolute;top:60px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between">
+<button onClick="{{ back }}" style="width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">close</i></button>
+<span style="font-size:16px;font-weight:600">Scan receipt</span>
+<span style="width:42px"></span>
+</div>
+<div style="position:absolute;top:128px;left:50%;transform:translateX(-50%);width:250px;height:520px;border-radius:20px;border:2.5px dashed rgba(255,255,255,.8);box-sizing:border-box;display:flex;align-items:center;justify-content:center;font:500 11px ui-monospace,Menlo,monospace;color:#8A8276">receipt</div>
+<button onClick="{{ captureReceipt }}" aria-label="Capture" style="position:absolute;bottom:52px;left:50%;transform:translateX(-50%);width:74px;height:74px;border-radius:50%;border:4px solid rgba(255,255,255,.4);background:#fff;background-clip:content-box;padding:4px;cursor:pointer"></button>
+</div>
+</sc-if>
+
+<!-- RECEIPT REVIEW -->
+<sc-if value="{{ ovReceiptReview }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Receipt review" style="position:absolute;inset:0;z-index:32;background:#F6F3ED;overflow-y:auto;padding:62px 20px 120px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:16px">
+<button onClick="{{ back }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">arrow_back</i></button>
+<div>
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:600;letter-spacing:-0.025em">Review receipt</h1>
+<div style="font-size:15px;color:#736B60;margin-top:4px">Kroger · Oct 17</div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ rRows }}" as="r" hint-placeholder-count="9">
+<div style="border-top:{{ r.border }};background:{{ r.rowBg }}">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 12px 12px 16px">
+<button onClick="{{ r.toggle }}" style="width:24px;height:24px;border-radius:50%;flex:none;border:2px solid {{ r.cb }};background:{{ r.cbg }};display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;cursor:pointer"><sc-if value="{{ r.on }}"><i style="font-size:16px;color:#fff">check</i></sc-if></button>
+<div style="flex:1;min-width:0">
+<sc-if value="{{ r.notEditing }}"><div style="font-size:16px;font-weight:600;color:{{ r.nc }}">{{ r.name }}</div></sc-if>
+<sc-if value="{{ r.editing }}"><input value="{{ r.name }}" onChange="{{ r.onName }}" onKeyDown="{{ r.onKey }}" autofocus="{{ true }}" style="width:100%;font-size:16px;font-weight:600;border:0;border-bottom:1.5px solid #2D6A4B;outline:none;background:transparent;padding:2px 0"></sc-if>
+<div style="font:500 11.5px ui-monospace,Menlo,monospace;color:#8A8174;margin-top:3px">{{ r.raw }}</div>
+</div>
+<button onClick="{{ r.cycle }}" style="height:30px;padding:0 11px;border-radius:15px;border:0;background:#EEE9E0;color:#1E1A16;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">{{ r.locName }}</button>
+</div>
+<sc-if value="{{ r.hasDate }}"><div style="display:flex;align-items:center;gap:8px;padding:0 12px 12px 52px"><span style="flex:1;font-size:13.5px;color:#736B60">Good until</span><span style="display:flex;align-items:center;gap:4px;flex:none"><button onClick="{{ r.dc.dec }}" aria-label="Earlier" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">remove</i></button><div onClick="{{ r.dc.pick }}" role="button" style="position:relative;height:32px;padding:0 10px;border-radius:9px;background:#EEE9E0;color:#1E1A16;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:16px;color:#736B60">calendar_today</i>{{ r.dc.short }}<input type="date" value="{{ r.dc.iso }}" onChange="{{ r.dc.onPick }}" tabindex="-1" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;padding:0;margin:0"></div><button onClick="{{ r.dc.inc }}" aria-label="Later" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">add</i></button></span></div></sc-if>
+<sc-if value="{{ r.ask }}">
+<div style="display:flex;align-items:center;gap:8px;padding:0 12px 12px 52px">
+<span style="flex:1;font-size:14px;font-weight:500">{{ r.askText }}</span>
+<button onClick="{{ r.yes }}" style="height:32px;padding:0 14px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:14px;font-weight:600;cursor:pointer">Yes</button>
+<button onClick="{{ r.change }}" style="height:32px;padding:0 14px;border-radius:16px;border:0;background:#fff;color:#1E1A16;font-size:14px;font-weight:600;cursor:pointer">Change</button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+<button onClick="{{ addReceipt }}" style="position:absolute;left:20px;right:20px;bottom:40px;z-index:33;height:56px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:16px;font-weight:600;cursor:pointer">{{ rBtnText }}</button>
+</sc-if>
+
+<!-- SWEEP -->
+<sc-if value="{{ ovSweep }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Sweep" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;display:flex;flex-direction:column;padding:62px 0 0;box-sizing:border-box">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px">
+<button onClick="{{ closeAll }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">close</i></button>
+<span style="font-size:16px;font-weight:600">Sunday sweep</span>
+<span style="width:40px;text-align:right;font-size:14px;font-weight:600;color:#736B60">{{ sweepProg }}</span>
+</div>
+<div style="margin:16px 20px 0;height:4px;border-radius:2px;background:#E2DBCF;overflow:hidden"><div style="height:100%;width:{{ progW }};background:#2D6A4B;border-radius:2px;transition:width .25s"></div></div>
+<sc-if value="{{ sweepActive }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;position:relative;margin:20px 24px 12px">
+<sc-if value="{{ hasNextCard }}">
+<div style="position:absolute;inset:0;transform:translateY(14px) scale(.93);background:#fff;border-radius:30px;opacity:.7"></div>
+</sc-if>
+<div onPointerDown="{{ onDown }}" onPointerMove="{{ onMove }}" onPointerUp="{{ onUp }}" onPointerCancel="{{ onUp }}" style="position:absolute;inset:0;background:#fff;border-radius:30px;box-shadow:0 12px 32px rgba(30,26,22,.10);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px;text-align:center;touch-action:none;user-select:none;cursor:grab;transform:{{ cardT }};transition:{{ cardTr }}">
+<span style="position:absolute;top:26px;left:24px;transform:rotate(-12deg);border:3px solid #2D6A4B;color:#2D6A4B;font-size:20px;font-weight:700;padding:4px 10px;border-radius:10px;opacity:{{ haveOp }}">STILL HAVE</span>
+<span style="position:absolute;top:26px;right:24px;transform:rotate(12deg);border:3px solid #C8502C;color:#C8502C;font-size:20px;font-weight:700;padding:4px 10px;border-radius:10px;opacity:{{ goneOp }}">GONE</span>
+<span style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);border:3px solid #1E1A16;color:#1E1A16;font-size:20px;font-weight:700;padding:4px 10px;border-radius:10px;opacity:{{ lowOp }}">LOW</span>
+<span style="font-size:14px;font-weight:600;color:#736B60">{{ card.loc }}</span>
+<span style="font-family:'Bricolage Grotesque',sans-serif;font-size:38px;font-weight:600;letter-spacing:-0.025em;line-height:1.05;text-wrap:balance">{{ card.name }}</span>
+<span style="font-size:15px;color:#736B60">{{ card.checked }}</span>
+<span style="margin-top:8px;font-size:14px;font-weight:600;background:#EEE9E0;padding:6px 12px;border-radius:12px">{{ card.guess }}</span>
+</div>
+</div>
+<div style="display:flex;justify-content:center;gap:30px;padding:12px 0 52px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><button onClick="{{ swGone }}" aria-label="Gone" style="width:66px;height:66px;border-radius:50%;border:0;background:#fff;color:#C8502C;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(30,26,22,.08);cursor:pointer" style-active="transform:scale(.92)"><i style="font-size:32px">close</i></button><span style="font-size:13px;font-weight:600;color:#736B60">Gone</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><button onClick="{{ swLow }}" aria-label="Low" style="width:66px;height:66px;border-radius:50%;border:0;background:#fff;color:#1E1A16;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(30,26,22,.08);cursor:pointer" style-active="transform:scale(.92)"><i style="font-size:30px">south</i></button><span style="font-size:13px;font-weight:600;color:#736B60">Low</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><button onClick="{{ swHave }}" aria-label="Still have" style="width:66px;height:66px;border-radius:50%;border:0;background:#2D6A4B;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(30,26,22,.12);cursor:pointer" style-active="transform:scale(.92)"><i style="font-size:32px">check</i></button><span style="font-size:13px;font-weight:600;color:#736B60">Still have</span></div>
+</div>
+</sc-if>
+<sc-if value="{{ sweepDone }}">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:0 32px;text-align:center">
+<span style="width:84px;height:84px;border-radius:50%;background:#E1ECE4;color:#2D6A4B;display:flex;align-items:center;justify-content:center"><i style="font-size:46px">check</i></span>
+<span style="font-family:'Bricolage Grotesque',sans-serif;font-size:32px;font-weight:600;letter-spacing:-0.02em;margin-top:6px">All caught up</span>
+<span style="font-size:16px;color:#736B60;line-height:1.5">{{ sweepSummary }}</span>
+</div>
+<div style="padding:0 20px 48px;display:flex;flex-direction:column;gap:10px">
+<sc-if value="{{ sweepHadGone }}"><button onClick="{{ sweepToList }}" style="height:54px;border-radius:16px;border:0;background:#EAE4DA;color:#1E1A16;font-size:16px;font-weight:600;cursor:pointer">Review list</button></sc-if>
+<button onClick="{{ closeAll }}" style="height:54px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:16px;font-weight:600;cursor:pointer">Done</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<!-- RECIPE -->
+<sc-if value="{{ ovRecipe }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Recipe" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;overflow-y:auto;padding-bottom:120px">
+<div style="position:relative;height:280px;background:repeating-linear-gradient(135deg,#EDE7DC 0 10px,#E5DED1 10px 20px);display:flex;align-items:center;justify-content:center;font:500 11px ui-monospace,Menlo,monospace;color:#8A8174">dish photo
+<button onClick="{{ back }}" style="position:absolute;top:58px;left:16px;width:42px;height:42px;border-radius:50%;border:0;background:#fff;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">arrow_back</i></button>
+<button onClick="{{ recipe.toggleSave }}" style="position:absolute;top:58px;right:16px;width:42px;height:42px;border-radius:50%;border:0;background:#fff;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px;font-variation-settings:'FILL' {{ recipe.bmFill }}">bookmark</i></button>
+</div>
+<div style="padding:20px;display:flex;flex-direction:column;gap:20px">
+<div>
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:600;letter-spacing:-0.025em;line-height:1.1">{{ recipe.title }}</h1>
+<div style="font-size:15px;color:#736B60;margin-top:6px">{{ recipe.meta }}</div>
+</div>
+<sc-if value="{{ recipe.hasExp }}">
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ recipe.exp }}" as="e" hint-placeholder-count="3">
+<span style="font-size:14px;font-weight:600;color:#A33E1B;background:#F6E2D8;padding:7px 12px;border-radius:14px">{{ e.name }} · {{ e.when }}</span>
+</sc-for>
+</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:10px">
+<h2 style="margin:0;font-size:18px;font-weight:700">Ingredients</h2>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ recipe.ings }}" as="g" hint-placeholder-count="6">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 14px 12px 16px;border-top:{{ g.border }};min-height:30px">
+<div style="flex:1;min-width:0">
+<div style="font-size:16px;font-weight:500">{{ g.name }}</div>
+<div style="font-size:13px;color:#736B60;margin-top:2px">{{ g.amt }}</div>
+</div>
+<sc-if value="{{ g.have }}"><span style="font-size:13px;font-weight:600;color:#2D6A4B;display:flex;align-items:center;gap:4px"><i style="font-size:17px">check</i>{{ g.haveText }}</span></sc-if>
+<sc-if value="{{ g.missing }}"><button onClick="{{ g.add }}" style="height:32px;padding:0 12px;border-radius:16px;border:0;background:#EEE9E0;color:#1E1A16;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px"><i style="font-size:17px">add</i>List</button></sc-if>
+<sc-if value="{{ g.onList }}"><span style="font-size:13px;font-weight:600;color:#736B60">On list</span></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-size:18px;font-weight:700">Steps</h2>
+<sc-for list="{{ recipe.steps }}" as="st" hint-placeholder-count="4">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<span style="width:28px;height:28px;border-radius:50%;background:#1E1A16;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none">{{ st.n }}</span>
+<span style="font-size:16px;line-height:1.5;padding-top:2px;text-wrap:pretty">{{ st.t }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;z-index:31;padding:12px 20px 38px;background:#F6F3ED;border-top:1px solid #ECE6DC">
+<button onClick="{{ openDeduct }}" style="width:100%;height:56px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:17px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><i style="font-size:22px">skillet</i>I cooked this</button>
+</div>
+<sc-if value="{{ deductOpen }}">
+<div onClick="{{ closeDeduct }}" style="position:absolute;inset:0;z-index:35;background:rgba(30,26,22,.36)"></div>
+<div data-screen-label="Cooked it" style="position:absolute;left:0;right:0;bottom:0;z-index:36;background:#F6F3ED;border-radius:28px 28px 0 0;padding:10px 20px 40px;display:flex;flex-direction:column;gap:14px;max-height:84%;box-sizing:border-box">
+<div style="width:40px;height:5px;border-radius:3px;background:#D6CEC1;align-self:center"></div>
+<div>
+<h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:600;letter-spacing:-0.02em">Update kitchen</h2>
+<div style="font-size:15px;color:#736B60;margin-top:4px">{{ recipe.title }}</div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow-y:auto">
+<sc-for list="{{ deductRows }}" as="d" hint-placeholder-count="5">
+<div style="display:flex;flex-direction:column;gap:10px;padding:13px 16px;border-top:{{ d.border }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:16px;font-weight:600">{{ d.name }}</span>
+<span style="font-size:13px;color:#736B60">was {{ d.from }}</span>
+</div>
+<sc-if value="{{ d.isLevel }}">
+<div style="display:flex;gap:6px">
+<sc-for list="{{ d.levels }}" as="lv" hint-placeholder-count="4">
+<button onClick="{{ lv.pick }}" style="flex:1;height:34px;border-radius:10px;border:0;background:{{ lv.bg }};color:{{ lv.c }};font-size:14px;font-weight:600;cursor:pointer">{{ lv.l }}</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ d.isCount }}">
+<div style="display:flex;align-items:center;gap:12px">
+<button onClick="{{ d.dec }}" style="width:34px;height:34px;border-radius:10px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:20px">remove</i></button>
+<span style="font-size:15px;font-weight:600;min-width:70px;text-align:center">{{ d.countText }}</span>
+<button onClick="{{ d.inc }}" style="width:34px;height:34px;border-radius:10px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:20px">add</i></button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<button onClick="{{ applyDeduct }}" style="height:56px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:16px;font-weight:600;cursor:pointer;flex:none">Update</button>
+</div>
+</sc-if>
+</sc-if>
+
+<!-- SETTINGS -->
+<sc-if value="{{ ovSettings }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Settings" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;overflow-y:auto;padding:62px 20px 48px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:20px">
+<div style="display:flex;align-items:center;gap:12px">
+<button onClick="{{ back }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">arrow_back</i></button>
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:600;letter-spacing:-0.025em">Settings</h1>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#736B60;padding:0 4px">Household</span>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ members }}" as="m" hint-placeholder-count="1">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:{{ m.border }}">
+<span style="width:36px;height:36px;border-radius:50%;background:{{ m.bg }};color:{{ m.c }};font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ m.i }}</span>
+<span style="flex:1;font-size:16px;font-weight:500">{{ m.n }}</span>
+<span style="font-size:14px;color:#736B60">{{ m.role }}</span>
+</div>
+</sc-for>
+<button onClick="{{ invite }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;border:0;border-top:1px solid #ECE6DC;background:none;cursor:pointer;text-align:left">
+<span style="width:36px;height:36px;border-radius:50%;background:#E1ECE4;color:#2D6A4B;display:flex;align-items:center;justify-content:center"><i style="font-size:20px">person_add</i></span>
+<span style="flex:1;font-size:16px;font-weight:600;color:#2D6A4B">Invite someone</span>
+</button>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#736B60;padding:0 4px">Locations</span>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<sc-for list="{{ locRows }}" as="l" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:{{ l.border }}">
+<span style="flex:1;font-size:16px">{{ l.name }}</span>
+<span style="font-size:14px;color:#736B60">{{ l.count }}</span>
+</div>
+</sc-for>
+<button onClick="{{ settingsAddLoc }}" style="width:100%;display:flex;align-items:center;gap:8px;padding:14px 16px;border:0;border-top:1px solid #ECE6DC;background:none;cursor:pointer;color:#2D6A4B;font-size:16px;font-weight:600"><i style="font-size:20px">add</i>Add location</button>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#736B60;padding:0 4px">Notifications</span>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<div onClick="{{ toggleDigest }}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer">
+<span style="flex:1;font-size:16px">Daily digest</span>
+<span style="width:50px;height:30px;border-radius:15px;background:{{ digestBg }};position:relative;transition:background .15s;flex:none"><span style="position:absolute;top:2px;left:{{ digestKnob }};width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span>
+</div>
+<div onClick="{{ cycleDigest }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC;cursor:pointer;opacity:{{ digestOp }}">
+<span style="flex:1;font-size:16px">Time</span>
+<span style="font-size:15px;color:#736B60">{{ digestTime }}</span>
+<i style="font-size:20px;color:#A39A8E">unfold_more</i>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:14px;font-weight:600;color:#736B60;padding:0 4px">Your data</span>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<div onClick="{{ exportCsv }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer"><span style="flex:1;font-size:16px">Export as CSV</span><i style="font-size:20px;color:#736B60">download</i></div>
+<div onClick="{{ exportJson }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC;cursor:pointer"><span style="flex:1;font-size:16px">Export as JSON</span><i style="font-size:20px;color:#736B60">download</i></div>
+</div>
+</div>
+<div style="background:#fff;border-radius:20px;overflow:hidden">
+<div onClick="{{ openRecap }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer"><span style="flex:1;font-size:16px">Monthly recap</span><i style="font-size:22px;color:#A39A8E">chevron_right</i></div>
+<div onClick="{{ openPlus }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC;cursor:pointer"><span style="flex:1;font-size:16px">Larder Plus</span><span style="font-size:14px;color:#736B60">{{ planLabel }}</span><i style="font-size:22px;color:#A39A8E">chevron_right</i></div>
+<div onClick="{{ faq }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC;cursor:pointer"><span style="flex:1;font-size:16px">Help &amp; FAQ</span><i style="font-size:22px;color:#A39A8E">chevron_right</i></div>
+</div>
+<button onClick="{{ signOut }}" style="height:50px;border-radius:16px;border:0;background:#fff;color:#B5461F;font-size:16px;font-weight:600;cursor:pointer">Sign out</button>
+</div>
+</sc-if>
+
+<!-- RECAP -->
+<sc-if value="{{ ovRecap }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Monthly recap" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;overflow-y:auto;padding:62px 20px 48px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:16px">
+<div style="display:flex;align-items:center;gap:12px">
+<button onClick="{{ back }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">arrow_back</i></button>
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:600;letter-spacing:-0.025em">October</h1>
+</div>
+<div style="background:#fff;border-radius:22px;padding:22px 20px">
+<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:58px;font-weight:600;letter-spacing:-0.03em;line-height:1;color:#2D6A4B">{{ savedAmt }}</div>
+<div style="font-size:15px;color:#736B60;margin-top:6px">saved so far this month</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px;padding-top:18px;border-top:1px solid #ECE6DC">
+<div><div style="font-size:24px;font-weight:700">{{ stUsed }}</div><div style="font-size:13px;color:#736B60;margin-top:2px">Used in time</div></div>
+<div><div style="font-size:24px;font-weight:700">{{ stTossed }}</div><div style="font-size:13px;color:#736B60;margin-top:2px">Tossed</div></div>
+<div><div style="font-size:24px;font-weight:700">{{ stCooked }}</div><div style="font-size:13px;color:#736B60;margin-top:2px">Meals cooked</div></div>
+</div>
+</div>
+<div style="background:#fff;border-radius:22px;padding:18px 20px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+<span style="font-size:16px;font-weight:600">By week</span>
+<span style="display:flex;gap:12px;font-size:12.5px;color:#736B60"><span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:#2D6A4B"></span>Used</span><span style="display:flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:50%;background:#D7754F"></span>Tossed</span></span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:end;height:120px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="display:flex;align-items:flex-end;gap:4px;height:96px"><div style="width:22px;height:70px;border-radius:6px;background:#2D6A4B"></div><div style="width:22px;height:16px;border-radius:6px;background:#D7754F"></div></div><span style="font-size:12.5px;color:#736B60">Oct 4</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="display:flex;align-items:flex-end;gap:4px;height:96px"><div style="width:22px;height:84px;border-radius:6px;background:#2D6A4B"></div><div style="width:22px;height:8px;border-radius:6px;background:#D7754F"></div></div><span style="font-size:12.5px;color:#736B60">Oct 11</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><div style="display:flex;align-items:flex-end;gap:4px;height:96px"><div style="width:22px;height:92px;border-radius:6px;background:#2D6A4B"></div><div style="width:22px;height:8px;border-radius:6px;background:#D7754F"></div></div><span style="font-size:12.5px;color:#736B60">Oct 18</span></div>
+</div>
+</div>
+<div style="background:#fff;border-radius:22px;padding:16px 20px">
+<div style="font-size:16px;font-weight:600;margin-bottom:6px">Tossed</div>
+<div style="font-size:15px;color:#736B60;line-height:1.5">Cilantro, sour cream, half a loaf of sourdough</div>
+</div>
+<div style="background:#1E1A16;color:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600;letter-spacing:-0.01em">Larder Plus</div>
+<div style="font-size:15px;line-height:1.5;color:#E3DDD3">{{ plusPitch }}</div>
+<button onClick="{{ openPlus }}" style="height:48px;border-radius:14px;border:0;background:#fff;color:#1E1A16;font-size:15px;font-weight:700;cursor:pointer">{{ plusCta }}</button>
+</div>
+</div>
+</sc-if>
+
+<!-- PLUS -->
+<sc-if value="{{ ovPlus }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Larder Plus" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;overflow-y:auto;padding:62px 20px 40px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:18px">
+<button onClick="{{ back }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">close</i></button>
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.025em">Larder Plus</h1>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Unlimited receipt scans</div>
+<div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Add food from a fridge photo</div>
+<div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Unlimited recipe ideas, diet and time filters</div>
+<div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Restock predictions</div>
+<div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Up to 6 members, plus a second household</div>
+<div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Full savings history</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+<sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+<div onClick="{{ p.pick }}" style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:#fff;border:2px solid {{ p.bd }};cursor:pointer">
+<span style="width:22px;height:22px;border-radius:50%;border:2px solid {{ p.bd }};box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex:none"><span style="width:10px;height:10px;border-radius:50%;background:{{ p.dot }}"></span></span>
+<span style="flex:1;font-size:16px;font-weight:600">{{ p.name }}</span>
+<span style="text-align:right"><span style="display:block;font-size:16px;font-weight:600">{{ p.price }}</span><span style="display:block;font-size:13px;color:#736B60">{{ p.note }}</span></span>
+</div>
+</sc-for>
+</div>
+<button onClick="{{ buyPlus }}" style="height:56px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:17px;font-weight:600;cursor:pointer;margin-top:4px">{{ buyText }}</button>
+<button onClick="{{ restore }}" style="border:0;background:none;color:#736B60;font-size:14px;font-weight:500;cursor:pointer">Restore purchase</button>
+</div>
+</sc-if>
+
+<!-- ITEM SHEET -->
+<sc-if value="{{ hasSheet }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeSheet }}" style="position:absolute;inset:0;z-index:40;background:rgba(30,26,22,.36)"></div>
+<div data-screen-label="Item details" style="position:absolute;left:0;right:0;bottom:0;z-index:41;background:#F6F3ED;border-radius:28px 28px 0 0;padding:10px 20px 40px;display:flex;flex-direction:column;gap:14px">
+<div style="width:40px;height:5px;border-radius:3px;background:#D6CEC1;align-self:center"></div>
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+<div>
+<h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:28px;font-weight:600;letter-spacing:-0.02em">{{ sheet.name }}</h2>
+<div style="font-size:15px;color:#736B60;margin-top:2px">{{ sheet.where }}</div>
+</div>
+<button onClick="{{ closeSheet }}" style="width:36px;height:36px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none"><i style="font-size:20px">close</i></button>
+</div>
+<sc-if value="{{ sheet.isLevel }}">
+<div style="display:flex;gap:4px;background:#EAE4DA;border-radius:14px;padding:4px">
+<sc-for list="{{ sheet.levels }}" as="lv" hint-placeholder-count="4">
+<button onClick="{{ lv.pick }}" style="flex:1;height:40px;border-radius:11px;border:0;background:{{ lv.bg }};box-shadow:{{ lv.sh }};color:{{ lv.c }};font-size:15px;font-weight:600;cursor:pointer">{{ lv.l }}</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ sheet.isCount }}">
+<div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border-radius:16px;padding:8px 8px 8px 16px">
+<span style="font-size:16px;font-weight:600">{{ sheet.countText }}</span>
+<span style="display:flex;gap:8px">
+<button onClick="{{ sheet.dec }}" style="width:40px;height:40px;border-radius:12px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">remove</i></button>
+<button onClick="{{ sheet.inc }}" style="width:40px;height:40px;border-radius:12px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">add</i></button>
+</span>
+</div>
+</sc-if>
+<sc-if value="{{ sheet.hasDate }}">
+<div style="background:#fff;border-radius:16px;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;padding:12px 8px 12px 16px">
+<div style="flex:1;min-width:0">
+<div style="font-size:16px;font-weight:600">Good until</div>
+<div style="font-size:13px;color:#736B60;margin-top:2px">{{ sheet.inText }} · {{ sheet.src }}</div>
+</div>
+<span style="display:flex;align-items:center;gap:4px;flex:none"><button onClick="{{ sheet.dc.dec }}" aria-label="Earlier" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">remove</i></button><div onClick="{{ sheet.dc.pick }}" role="button" style="position:relative;height:32px;padding:0 10px;border-radius:9px;background:#EEE9E0;color:#1E1A16;font-size:14px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><i style="font-size:16px;color:#736B60">calendar_today</i>{{ sheet.dc.short }}<input type="date" value="{{ sheet.dc.iso }}" onChange="{{ sheet.dc.onPick }}" tabindex="-1" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;pointer-events:none;border:0;padding:0;margin:0"></div><button onClick="{{ sheet.dc.inc }}" aria-label="Later" style="width:32px;height:32px;border-radius:9px;border:0;background:#EEE9E0;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0"><i style="font-size:18px">add</i></button></span>
+</div>
+<sc-if value="{{ sheet.canOpen }}">
+<div onClick="{{ sheet.toggleOpen }}" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid #ECE6DC;cursor:pointer">
+<span style="flex:1;font-size:16px">Opened</span>
+<span style="width:50px;height:30px;border-radius:15px;background:{{ sheet.openBg }};position:relative;transition:background .15s;flex:none"><span style="position:absolute;top:2px;left:{{ sheet.knob }};width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s"></span></span>
+</div>
+</sc-if>
+<sc-if value="{{ sheet.isLeftover }}">
+<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC">
+<span style="flex:1;font-size:16px">Made</span>
+<span style="font-size:15px;color:#736B60">{{ sheet.made }}</span>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<div style="display:flex;gap:6px;flex:none;overflow-x:auto;overflow-y:hidden;min-height:fit-content;scrollbar-width:none">
+<sc-for list="{{ sheet.locs }}" as="l" hint-placeholder-count="4">
+<button onClick="{{ l.pick }}" style="flex:none;height:34px;padding:0 13px;border-radius:17px;border:0;background:{{ l.bg }};color:{{ l.c }};font-size:14px;font-weight:600;cursor:pointer">{{ l.name }}</button>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
+<button onClick="{{ sheet.toList }}" style="height:64px;border-radius:16px;border:0;background:#fff;color:#1E1A16;font-size:13.5px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer"><i style="font-size:22px">shopping_basket</i>Add to list</button>
+<button onClick="{{ sheet.used }}" style="height:64px;border-radius:16px;border:0;background:#2D6A4B;color:#fff;font-size:13.5px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer"><i style="font-size:22px">check</i>Used up</button>
+<button onClick="{{ sheet.toss }}" style="height:64px;border-radius:16px;border:0;background:#fff;color:#B5461F;font-size:13.5px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer"><i style="font-size:22px">delete</i>Tossed</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showTopBlur }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;top:0;left:0;right:0;height:56px;z-index:50;pointer-events:none;background:rgba(246,243,237,.72);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)"></div>
+</sc-if>
+<sc-if value="{{ hasToast }}">
+<div style="position:absolute;left:50%;bottom:104px;transform:translateX(-50%);z-index:60;background:#1E1A16;color:#fff;font-size:14.5px;font-weight:500;padding:12px 18px;border-radius:14px;white-space:nowrap;box-shadow:0 6px 18px rgba(30,26,22,.2)">{{ toast }}</div>
+</sc-if>
+
+</div>
+</x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showIndex&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Presentation&quot;},&quot;levelStyle&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;meter&quot;,&quot;text&quot;],&quot;default&quot;:&quot;meter&quot;,&quot;tsType&quot;:&quot;'meter' | 'text'&quot;,&quot;section&quot;:&quot;Inventory&quot;}}">
+class Component extends DCLogic {
+  LV = ['Full', 'Some', 'Low', 'Out'];
+  recipes = [
+    { id: 'r1', title: 'Creamy spinach chicken', time: 30, serves: 4, ings: [
+      { ref: 'chicken', amt: '4 thighs', use: 4 }, { ref: 'spinach', amt: '1 bag' }, { ref: 'cream', amt: '½ cup' },
+      { ref: 'garlic', amt: '3 cloves' }, { ref: 'onions', amt: '1 onion', use: 1 }, { ref: 'rice', amt: '1½ cups' }, { name: 'Parmesan', amt: '¼ cup' }],
+      steps: ['Season the chicken and sear it 5 minutes per side.', 'Soften the onion and garlic in the same pan.', 'Stir in the cream, then the spinach until it wilts.', 'Return the chicken and simmer 10 minutes. Serve over rice.'] },
+    { id: 'r2', title: 'Chili rice bowls', time: 15, serves: 2, ings: [
+      { ref: 'chili', amt: '2 cups' }, { ref: 'rice', amt: '1 cup' }, { ref: 'cheddar', amt: '½ cup, grated' }, { ref: 'cilantro', amt: 'A handful' }, { ref: 'salsa', amt: 'To serve' }],
+      steps: ['Cook the rice.', 'Warm the chili on the stove.', 'Spoon chili over rice and top with cheddar, cilantro and salsa.'] },
+    { id: 'r3', title: 'Strawberry yogurt parfait', time: 5, serves: 2, idea: true, batch: 0, ings: [
+      { ref: 'berries', amt: '1 cup, sliced' }, { ref: 'yogurt', amt: '1½ cups' }, { name: 'Granola', amt: '½ cup' }],
+      steps: ['Layer yogurt, strawberries and granola in two glasses.', 'Repeat and serve right away.'] },
+    { id: 'r4', title: 'Black bean quesadillas', time: 20, serves: 2, ings: [
+      { ref: 'beans', amt: '1 can', use: 1 }, { ref: 'cheddar', amt: '1 cup, grated' }, { ref: 'salsa', amt: '¼ cup' }, { ref: 'cilantro', amt: 'A handful' }, { name: 'Tortillas', amt: '4' }],
+      steps: ['Mash half the beans with salsa.', 'Fill tortillas with beans and cheddar.', 'Toast in a dry pan 2 to 3 minutes per side.'] },
+    { id: 'r5', title: 'Sourdough French toast', time: 15, serves: 2, idea: true, batch: 1, ings: [
+      { ref: 'bread', amt: '4 slices' }, { ref: 'eggs', amt: '3 eggs', use: 3 }, { ref: 'milk', amt: '½ cup' }, { ref: 'berries', amt: 'To serve' }],
+      steps: ['Whisk eggs and milk.', 'Soak the bread 20 seconds per side.', 'Cook in butter until golden. Top with strawberries.'] },
+    { id: 'r6', title: 'Cilantro garlic rice', time: 20, serves: 4, idea: true, batch: 1, ings: [
+      { ref: 'rice', amt: '1½ cups' }, { ref: 'cilantro', amt: '1 bunch' }, { ref: 'garlic', amt: '2 cloves' }, { name: 'Lime', amt: '1' }],
+      steps: ['Toast garlic in oil, then add rice and water.', 'Simmer covered 15 minutes.', 'Fold in chopped cilantro and lime juice.'] },
+  ];
+  quick = [
+    { title: 'Produce', aisle: 'Produce', items: ['Bananas', 'Apples', 'Avocados', 'Lemons', 'Tomatoes', 'Lettuce', 'Carrots', 'Bell peppers', 'Potatoes', 'Cucumbers'] },
+    { title: 'Dairy & eggs', aisle: 'Dairy', items: ['Milk', 'Eggs', 'Butter', 'Yogurt', 'Cheese', 'Sour cream'] },
+    { title: 'Meat & fish', aisle: 'Meat', items: ['Chicken breast', 'Ground beef', 'Salmon', 'Bacon', 'Deli turkey'] },
+    { title: 'Bakery', aisle: 'Bakery', items: ['Bread', 'Tortillas', 'Bagels'] },
+  ];
+  life = { Bananas: 5, Apples: 30, Avocados: 4, Lemons: 21, Tomatoes: 5, Lettuce: 7, Carrots: 21, 'Bell peppers': 7, Potatoes: 30, Cucumbers: 7, Milk: 7, Eggs: 28, Butter: 60, Yogurt: 14, Cheese: 28, 'Sour cream': 14, 'Chicken breast': 2, 'Ground beef': 2, Salmon: 2, Bacon: 7, 'Deli turkey': 5, Bread: 5, Tortillas: 14, Bagels: 5, 'Baby spinach': 5, 'Oat milk': 10 };
+  state = this.seed();
+
+  seed() {
+    const I = (o) => ({ count: null, opened: false, src: 'FoodKeeper', conf: 0.9, ...o });
+    return {
+      tab: 'home', overlay: null, stack: [], sheetId: null, recipeId: 'r1', deductOpen: false, deduct: {},
+      loc: 'fridge', q: '', toast: null, addingLoc: false, newLoc: '',
+      addSel: {}, addLoc: 'fridge', addText: '', leftoverOpen: false, loName: '', loMade: 0, loLoc: 'fridge',
+      scanFound: false, scanLoc: 'fridge', scanDays: 10, loDays: null, torch: false, rStep: 'camera', rItems: this.receiptSeed(), receiptLeft: 4,
+      sweepQ: [], sweepI: 0, sweepRes: { have: 0, low: 0, gone: 0 }, dx: 0, dy: 0, dragging: false, snap: false,
+      listText: '', cookFilter: 'expiring', ideasLeft: 4, genShown: 0, saved: { r1: true, r2: true, r4: true },
+      digest: true, digestTime: 0, members: [{ n: 'Dhairya', i: 'DJ', role: 'You' }], plan: 'year', plus: false,
+      stats: { used: 34, tossed: 3, cooked: 9 },
+      locs: [{ id: 'fridge', name: 'Fridge' }, { id: 'freezer', name: 'Freezer' }, { id: 'pantry', name: 'Pantry' }, { id: 'garage', name: 'Garage shelf' }],
+      items: [
+        I({ id: 'spinach', name: 'Baby spinach', short: 'spinach', loc: 'fridge', level: 'Some', days: 2, aisle: 'Produce' }),
+        I({ id: 'chicken', name: 'Chicken thighs', short: 'chicken', loc: 'fridge', count: 4, unit: 'thighs', days: 1, src: 'Label', aisle: 'Meat' }),
+        I({ id: 'cream', name: 'Heavy cream', short: 'cream', loc: 'fridge', level: 'Some', days: 3, opened: true, aisle: 'Dairy' }),
+        I({ id: 'berries', name: 'Strawberries', loc: 'fridge', level: 'Some', days: 1, conf: 0.7, aisle: 'Produce' }),
+        I({ id: 'chili', name: 'Turkey chili', short: 'chili', loc: 'fridge', level: 'Some', days: 2, leftover: true, made: 'Thu, Oct 15' }),
+        I({ id: 'cilantro', name: 'Cilantro', loc: 'fridge', level: 'Low', days: 3, conf: 0.4, checked: 6, aisle: 'Produce' }),
+        I({ id: 'milk', name: 'Milk', loc: 'fridge', level: 'Low', days: 4, opened: true, src: 'Label', conf: 0.35, checked: 5, aisle: 'Dairy' }),
+        I({ id: 'yogurt', name: 'Greek yogurt', loc: 'fridge', level: 'Full', days: 9, src: 'Label', aisle: 'Dairy' }),
+        I({ id: 'salsa', name: 'Salsa', loc: 'fridge', level: 'Low', days: 5, opened: true, conf: 0.3, checked: 12, aisle: 'Pantry' }),
+        I({ id: 'eggs', name: 'Eggs', loc: 'fridge', count: 7, unit: 'eggs', days: 19, src: 'Label', conf: 0.6, aisle: 'Dairy' }),
+        I({ id: 'cheddar', name: 'Cheddar', loc: 'fridge', level: 'Some', days: 18, opened: true, conf: 0.45, checked: 9, aisle: 'Dairy' }),
+        I({ id: 'butter', name: 'Butter', loc: 'fridge', level: 'Out', days: null, staple: true, aisle: 'Dairy' }),
+        I({ id: 'peas', name: 'Frozen peas', loc: 'freezer', level: 'Some', days: 240, conf: 0.6, aisle: 'Frozen' }),
+        I({ id: 'beef', name: 'Ground beef', loc: 'freezer', count: 2, unit: 'lb', days: 92, aisle: 'Meat' }),
+        I({ id: 'lasagna', name: 'Lasagna', loc: 'freezer', level: 'Some', days: 58, leftover: true, made: 'Fri, Oct 2' }),
+        I({ id: 'icecream', name: 'Ice cream', loc: 'freezer', level: 'Low', days: 40, conf: 0.3, checked: 21, aisle: 'Frozen' }),
+        I({ id: 'bread', name: 'Sourdough', loc: 'pantry', level: 'Some', days: 3, conf: 0.6, aisle: 'Bakery' }),
+        I({ id: 'onions', name: 'Yellow onions', loc: 'pantry', count: 3, unit: 'onions', days: 16, aisle: 'Produce' }),
+        I({ id: 'garlic', name: 'Garlic', loc: 'pantry', level: 'Low', days: null, staple: true, conf: 0.4, checked: 14, aisle: 'Produce' }),
+        I({ id: 'rice', name: 'Jasmine rice', loc: 'pantry', level: 'Some', days: null, staple: true, aisle: 'Pantry' }),
+        I({ id: 'beans', name: 'Black beans', loc: 'pantry', count: 4, unit: 'cans', days: null, staple: true, aisle: 'Pantry' }),
+        I({ id: 'pasta', name: 'Penne', loc: 'pantry', count: 2, unit: 'boxes', days: null, staple: true, aisle: 'Pantry' }),
+        I({ id: 'oil', name: 'Olive oil', loc: 'pantry', level: 'Some', days: null, staple: true, aisle: 'Pantry' }),
+        I({ id: 'coffee', name: 'Coffee', loc: 'pantry', level: 'Low', days: null, staple: true, aisle: 'Pantry' }),
+        I({ id: 'flour', name: 'Flour', loc: 'pantry', level: 'Low', days: null, staple: true, conf: 0.55, aisle: 'Pantry' }),
+        I({ id: 'cumin', name: 'Cumin', loc: 'pantry', level: 'Low', days: null, staple: true, conf: 0.25, checked: 30, aisle: 'Pantry' }),
+        I({ id: 'water', name: 'Sparkling water', loc: 'garage', count: 12, unit: 'cans', days: null, staple: true, aisle: 'Drinks' }),
+        I({ id: 'tomatoes', name: 'Crushed tomatoes', loc: 'garage', count: 6, unit: 'cans', days: null, staple: true, aisle: 'Pantry' }),
+      ],
+      list: [
+        { id: 'l1', name: 'Bananas', qty: '1 bunch', aisle: 'Produce' }, { id: 'l2', name: 'Lemons', qty: '3', aisle: 'Produce' },
+        { id: 'l3', name: 'Milk', qty: '1 gallon', aisle: 'Dairy' }, { id: 'l4', name: 'Butter', aisle: 'Dairy' },
+        { id: 'l5', name: 'Tortillas', aisle: 'Bakery' }, { id: 'l6', name: 'Coffee', aisle: 'Pantry' }, { id: 'l7', name: 'Paper towels', aisle: 'Household' },
+      ],
+    };
+  }
+  receiptSeed() {
+    const D = { Bananas: 5, Milk: 7, Eggs: 28, 'Baby spinach': 5, 'Chicken breast': 2, Tortillas: 14, Avocados: 4, Butter: 60 };
+    return [
+      { id: 'a', raw: 'BANANAS 2.31 LB', name: 'Bananas', loc: 'pantry', on: true },
+      { id: 'b', raw: 'KRO 2% RF MLK GAL', name: 'Milk', loc: 'fridge', on: true, unsure: true },
+      { id: 'c', raw: 'BRWN EGGS LG 12CT', name: 'Eggs', loc: 'fridge', on: true, qty: 12 },
+      { id: 'd', raw: 'BABY SPINACH 5OZ', name: 'Baby spinach', loc: 'fridge', on: true },
+      { id: 'e', raw: 'CHKN BRST BNLS SKNLS', name: 'Chicken breast', loc: 'fridge', on: true },
+      { id: 'f', raw: 'MISSION FLR TORT 10CT', name: 'Tortillas', loc: 'pantry', on: true },
+      { id: 'g', raw: 'AVOCADO HASS LG', name: 'Avocados', loc: 'fridge', on: true },
+      { id: 'h', raw: 'KRO BUTTER UNSLTD', name: 'Butter', loc: 'fridge', on: true },
+      { id: 'i', raw: 'BOUNTY PPR TWL 6PK', name: 'Paper towels', loc: 'pantry', on: false, nonFood: true },
+    ].map((r) => ({ ...r, days: r.nonFood ? null : D[r.name] }));
+  }
+
+  // helpers
+  isOut(i) { return i.count != null ? i.count === 0 : i.level === 'Out'; }
+  dayText(d) { if (d == null) return ''; if (d <= 0) return 'Today'; if (d === 1) return 'Tomorrow'; if (d < 14) return d + ' days'; if (d < 60) return Math.round(d / 7) + ' wks'; return Math.round(d / 30) + ' mo'; }
+  dayColor(d) { if (d == null) return '#736B60'; if (d <= 1) return '#B5461F'; if (d <= 3) return '#1E1A16'; return '#736B60'; }
+  expIn(d) { return d <= 0 ? 'Today' : d === 1 ? 'Tomorrow' : 'In ' + d + ' days'; }
+  dateText(d) { return new Date(2026, 9, 18 + d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); }
+  levelText(it) { if (it.count != null) return it.count + ' ' + it.unit; return it.conf < 0.5 ? 'Probably ' + it.level.toLowerCase() : it.level; }
+  locName(id) { const l = this.state.locs.find((x) => x.id === id); return l ? l.name : id; }
+  aisleOf(name) { const g = this.quick.find((q) => q.items.includes(name)); return g ? g.aisle : 'Other'; }
+  joinNames(a) { if (a.length < 2) return a.join(''); return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+  same(a, b) { return a.toLowerCase() === b.toLowerCase(); }
+  toast(msg) { clearTimeout(this._t); this.setState({ toast: msg }); this._t = setTimeout(() => this.setState({ toast: null }), 2200); }
+  upd(id, patch) { this.setState((s) => ({ items: s.items.map((i) => (i.id === id ? { ...i, ...patch } : i)) })); }
+  mk(name, loc, extra) {
+    this._n = (this._n || 0) + 1;
+    const d = this.life[name];
+    return { id: 'n' + this._n + Date.now(), name, loc, level: 'Full', count: null, days: loc === 'freezer' ? 120 : (d ?? 7), src: 'FoodKeeper', conf: 1, opened: false, aisle: this.aisleOf(name), ...(extra || {}) };
+  }
+  merge(items, name, loc, qty, days) {
+    const src = days != null && days !== this.defDays(name, loc) ? 'You' : 'FoodKeeper';
+    const idx = items.findIndex((i) => this.same(i.name, name) && !i.leftover);
+    if (idx >= 0) {
+      const it = items[idx];
+      items[idx] = { ...it, level: it.count == null ? 'Full' : it.level, count: it.count != null ? it.count + (qty || 1) : null,
+        days: days != null ? days : it.days != null ? (this.life[name] ?? Math.max(it.days, 7)) : null, opened: false, conf: 1, src };
+    } else items.push(this.mk(name, loc, days != null ? { days, src } : null));
+    return items;
+  }
+  locForAisle(a) { return a === 'Frozen' ? 'freezer' : ['Pantry', 'Bakery', 'Drinks', 'Other'].includes(a) ? 'pantry' : 'fridge'; }
+  addToList(name, aisle) {
+    if (this.state.list.some((r) => this.same(r.name, name))) return;
+    this._n = (this._n || 0) + 1;
+    this.setState((s) => ({ list: [...s.list, { id: 'l' + this._n + Date.now(), name, aisle: aisle || this.aisleOf(name) }] }));
+  }
+
+  defDays(name, loc) { return loc === 'freezer' ? 120 : (this.life[name] ?? 7); }
+  dateCtl(days, set) {
+    const d = new Date(2026, 9, 18 + days);
+    const iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    return {
+      short: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }), iso,
+      pick: (e) => { const i = e.currentTarget.querySelector('input'); if (!i) return; try { i.showPicker(); } catch (_) { i.focus(); } },
+      onPick: (e) => { const v = e.target.value; if (!v) return; const [y, m, dd] = v.split('-').map(Number); set(Math.max(0, Math.round((new Date(y, m - 1, dd) - new Date(2026, 9, 18)) / 864e5))); },
+      dec: () => set(Math.max(0, days - 1)), inc: () => set(days + 1),
+    };
+  }
+  // navigation
+  open(k, extra) { this.setState((s) => ({ stack: s.overlay ? [...s.stack, s.overlay] : s.stack, overlay: k, sheetId: null, ...(extra || {}) })); }
+  back = () => { this.setState((s) => { const st = s.stack.slice(); const prev = st.pop() || null; return { overlay: prev, stack: st, deductOpen: false, leftoverOpen: false }; }); };
+  closeAll = () => this.setState({ overlay: null, stack: [], deductOpen: false, leftoverOpen: false, addSel: {} });
+  jump(k) {
+    const base = { overlay: null, stack: [], sheetId: null, deductOpen: false, leftoverOpen: false };
+    if (['home', 'kitchen', 'list', 'cook'].includes(k)) return this.setState({ ...base, tab: k });
+    if (k === 'item') { const it = this.state.items.find((i) => i.loc === 'fridge') || this.state.items[0]; return this.setState({ ...base, tab: 'kitchen', loc: it.loc, q: '', sheetId: it.id }); }
+    if (k === 'add') return this.setState({ ...base, overlay: 'add' });
+    if (k === 'leftover') return this.setState({ ...base, overlay: 'add', leftoverOpen: true });
+    if (k === 'scan') return this.setState({ ...base, overlay: 'scan', stack: ['add'], scanFound: false });
+    if (k === 'receipt') return this.setState({ ...base, overlay: 'receipt', stack: ['add'], rStep: 'camera' });
+    if (k === 'review') return this.setState({ ...base, overlay: 'receipt', stack: ['add'], rStep: 'confirm', rItems: this.receiptSeed() });
+    if (k === 'sweep') return this.startSweep();
+    if (k === 'recipe') return this.setState({ ...base, tab: 'cook', overlay: 'recipe', recipeId: 'r1' });
+    if (k === 'deduct') { this.setState({ ...base, tab: 'cook', overlay: 'recipe', recipeId: 'r1' }); return setTimeout(() => this.openDeduct(), 0); }
+    this.setState({ ...base, overlay: k, stack: k === 'settings' ? [] : ['settings'] });
+  }
+
+  startSweep = () => {
+    let q = this.state.items.filter((i) => i.conf < 0.5).sort((a, b) => a.conf - b.conf).map((i) => i.id);
+    if (!q.length) q = this.state.items.filter((i) => !this.isOut(i)).slice(0, 5).map((i) => i.id);
+    this._busy = false;
+    this.setState({ overlay: 'sweep', stack: [], sheetId: null, sweepQ: q, sweepI: 0, sweepRes: { have: 0, low: 0, gone: 0 }, dx: 0, dy: 0, dragging: false, snap: false });
+  };
+  answer(kind) {
+    if (this._busy) return; this._busy = true;
+    const s = this.state, id = s.sweepQ[s.sweepI];
+    this.setState({ dragging: false, dx: kind === 'have' ? 520 : kind === 'gone' ? -520 : s.dx, dy: kind === 'low' ? 760 : s.dy });
+    setTimeout(() => {
+      this.setState((st) => ({
+        items: st.items.map((i) => {
+          if (i.id !== id) return i;
+          if (kind === 'have') return { ...i, conf: 1, level: i.level === 'Out' ? 'Some' : i.level };
+          if (kind === 'low') return { ...i, conf: 1, level: 'Low', count: i.count != null ? Math.min(i.count, 1) : null };
+          return { ...i, conf: 1, level: 'Out', count: i.count != null ? 0 : null };
+        }),
+        sweepI: st.sweepI + 1, sweepRes: { ...st.sweepRes, [kind]: st.sweepRes[kind] + 1 }, dx: 0, dy: 0, snap: true,
+      }));
+      setTimeout(() => { this._busy = false; this.setState({ snap: false }); }, 40);
+    }, 230);
+  }
+  onDown = (e) => { if (this._busy) return; this._sx = e.clientX; this._sy = e.clientY; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {} this.setState({ dragging: true }); };
+  onMove = (e) => { if (!this.state.dragging) return; this.setState({ dx: e.clientX - this._sx, dy: e.clientY - this._sy }); };
+  onUp = () => {
+    if (!this.state.dragging) return;
+    const { dx, dy } = this.state;
+    if (dx > 90) this.answer('have'); else if (dx < -90) this.answer('gone'); else if (dy > 80) this.answer('low');
+    else this.setState({ dragging: false, dx: 0, dy: 0 });
+  };
+
+  openDeduct = () => {
+    const R = this.recipes.find((r) => r.id === this.state.recipeId);
+    const d = {};
+    R.ings.forEach((g) => {
+      const it = g.ref && this.state.items.find((i) => i.id === g.ref);
+      if (!it || this.isOut(it)) return;
+      if (it.count != null) d[it.id] = Math.max(0, it.count - (g.use || 1));
+      else d[it.id] = it.staple ? it.level : this.LV[Math.min(3, this.LV.indexOf(it.level) + 1)];
+    });
+    this.setState({ deduct: d, deductOpen: true });
+  };
+  applyDeduct = () => {
+    const d = this.state.deduct;
+    this.setState((s) => ({
+      items: s.items.map((i) => (i.id in d ? (i.count != null ? { ...i, count: d[i.id], conf: 1 } : { ...i, level: d[i.id], conf: 1 }) : i)),
+      stats: { ...s.stats, cooked: s.stats.cooked + 1 }, deductOpen: false, overlay: null, stack: [],
+    }));
+    this.toast('Kitchen updated');
+  };
+
+  commitAdd = () => {
+    const sel = this.state.addSel, names = Object.keys(sel);
+    let items = this.state.items.slice();
+    names.forEach((n) => { items = this.merge(items, n, this.state.addLoc, 1, sel[n]); });
+    this.setState({ items, addSel: {}, overlay: null, stack: [] });
+    this.toast(`Added ${names.length} item${names.length > 1 ? 's' : ''}`);
+  };
+  addTyped = () => {
+    const t = this.state.addText.trim(); if (!t) return;
+    const name = t.charAt(0).toUpperCase() + t.slice(1);
+    this.setState((s) => ({ addSel: { ...s.addSel, [name]: this.defDays(name, s.addLoc) }, addText: '' }));
+  };
+  saveLeftover = () => {
+    const s = this.state, name = s.loName.trim() || 'Leftovers';
+    const made = ['Today', 'Yesterday', '2 days ago'][s.loMade];
+    const days = s.loDays ?? (s.loLoc === 'freezer' ? 60 : 4 - s.loMade);
+    this.setState({ items: [...s.items, this.mk(name, s.loLoc, { leftover: true, made, days, level: 'Full' })], leftoverOpen: false, loName: '', loMade: 0, loDays: null, overlay: null, stack: [] });
+    this.toast(name + ' saved');
+  };
+  scanCommit(next) {
+    this.setState((s) => ({ items: this.merge(s.items.slice(), 'Oat milk', s.scanLoc, 1, s.scanDays), scanFound: false, scanDays: 10, ...(next ? {} : { overlay: null, stack: [] }) }));
+    this.toast('Oat milk added');
+  }
+  addReceipt = () => {
+    const s = this.state, rows = s.rItems.filter((r) => r.on);
+    let items = s.items.slice();
+    rows.forEach((r) => { if (!r.nonFood) items = this.merge(items, r.name, r.loc, r.qty, r.days); });
+    const list = s.list.filter((l) => !rows.some((r) => this.same(r.name, l.name)));
+    this.setState({ items, list, overlay: null, stack: [], rStep: 'camera', rItems: this.receiptSeed(), receiptLeft: s.plus ? s.receiptLeft : Math.max(0, s.receiptLeft - 1) });
+    this.toast(`Added ${rows.length} items`);
+  };
+  updR(id, patch) { this.setState((s) => ({ rItems: s.rItems.map((r) => (r.id === id ? { ...r, ...patch } : r)) })); }
+  putAway = () => {
+    const s = this.state, done = s.list.filter((r) => r.checked);
+    let items = s.items.slice();
+    done.forEach((r) => { if (r.aisle !== 'Household') items = this.merge(items, r.name, this.locForAisle(r.aisle), parseInt(r.qty) || 1); });
+    this.setState({ items, list: s.list.filter((r) => !r.checked) });
+    this.toast(`Put away ${done.length} item${done.length > 1 ? 's' : ''}`);
+  };
+  addListText = () => {
+    const t = this.state.listText.trim(); if (!t) return;
+    const name = t.charAt(0).toUpperCase() + t.slice(1);
+    const inv = this.state.items.find((i) => this.same(i.name, name));
+    this.addToList(name, inv ? inv.aisle : this.aisleOf(name));
+    this.setState({ listText: '' });
+  };
+
+  renderVals() {
+    const s = this.state, P = this.props;
+    const showMeter = (P.levelStyle ?? 'meter') === 'meter';
+    const items = s.items, byId = (id) => items.find((i) => i.id === id);
+    const INK = '#1E1A16', MUTED = '#736B60', GREEN = '#2D6A4B', LINE = '1px solid #ECE6DC';
+    const vm = (it, i, withLoc) => {
+      const f = { Full: 3, Some: 2, Low: 1, Out: 0 }[it.level] ?? 0;
+      const on = f <= 1 ? '#C8502C' : INK, off = '#E2DBCF';
+      let sub = this.levelText(it);
+      if (it.leftover) sub = 'Leftover · made ' + it.made.split(',')[0];
+      else if (it.opened) sub += ' · Opened';
+      if (withLoc) sub = this.locName(it.loc) + ' · ' + sub;
+      return { id: it.id, name: it.name, sub, border: i ? LINE : '0', hasMeter: showMeter && it.count == null && !it.leftover,
+        m1: f >= 1 ? on : off, m2: f >= 2 ? on : off, m3: f >= 3 ? on : off, meterOp: it.conf < 0.5 ? 0.4 : 1,
+        dayText: this.dayText(it.days), dayColor: this.dayColor(it.days), open: () => this.setState({ sheetId: it.id }) };
+    };
+    const useSoon = items.filter((i) => i.days != null && i.days <= 3 && !this.isOut(i)).sort((a, b) => a.days - b.days).map((it, i) => vm(it, i, true));
+    let kRaw = s.q ? items.filter((i) => i.name.toLowerCase().includes(s.q.toLowerCase())) : items.filter((i) => i.loc === s.loc);
+    const kItems = kRaw.slice().sort((a, b) => (this.isOut(a) - this.isOut(b)) || ((a.days ?? 9999) - (b.days ?? 9999)) || a.name.localeCompare(b.name)).map((it, i) => vm(it, i, !!s.q));
+    const locTabs = s.locs.map((l) => { const act = !s.q && l.id === s.loc; return { name: l.name, count: items.filter((i) => i.loc === l.id).length, bg: act ? INK : '#fff', c: act ? '#fff' : INK, pick: () => this.setState({ loc: l.id, q: '' }) }; });
+
+    // recipes
+    const rv = this.recipes.filter((r) => !r.idea || r.batch <= s.genShown).map((r) => {
+      const ings = r.ings.map((g) => { const it = g.ref && byId(g.ref); return { g, it, have: !!it && !this.isOut(it) }; });
+      return { r, ings, exp: ings.filter((x) => x.have && x.it.days != null && x.it.days <= 3), haveN: ings.filter((x) => x.have).length };
+    });
+    const card = (x) => ({ title: x.r.title, meta: `${x.r.time} min · Have ${x.haveN} of ${x.ings.length}`, hasExp: x.exp.length > 0,
+      expText: 'Uses ' + this.joinNames(x.exp.map((e) => e.it.short || e.it.name.toLowerCase())), isNew: !!x.r.idea && !s.saved[x.r.id],
+      open: () => this.open('recipe', { recipeId: x.r.id }) });
+    const byExp = (a, b) => b.exp.length - a.exp.length || b.haveN / b.ings.length - a.haveN / a.ings.length;
+    let cl = rv.slice();
+    if (s.cookFilter === 'saved') cl = cl.filter((x) => s.saved[x.r.id]);
+    cl.sort(s.cookFilter === 'quick' ? (a, b) => a.r.time - b.r.time : byExp);
+    const tonight = card(rv.slice().sort(byExp)[0]);
+    const R = this.recipes.find((r) => r.id === s.recipeId) || this.recipes[0];
+    const Rx = rv.find((x) => x.r.id === R.id) || { ings: R.ings.map((g) => ({ g, it: g.ref && byId(g.ref), have: false })), exp: [] };
+    const recipe = {
+      title: R.title, meta: `${R.time} min · Serves ${R.serves}`, bmFill: s.saved[R.id] ? 1 : 0,
+      toggleSave: () => { const v = !s.saved[R.id]; this.setState({ saved: { ...s.saved, [R.id]: v } }); this.toast(v ? 'Saved' : 'Removed from saved'); },
+      hasExp: Rx.exp.length > 0, exp: Rx.exp.map((e) => ({ name: e.it.name, when: this.dayText(e.it.days).toLowerCase() })),
+      ings: Rx.ings.map((x, i) => { const name = x.g.name || (x.it ? x.it.name : ''); const onList = s.list.some((l) => this.same(l.name, name));
+        return { name, amt: x.g.amt, have: x.have, haveText: x.have ? this.levelText(x.it) : '', missing: !x.have && !onList, onList: !x.have && onList, border: i ? LINE : '0',
+          add: () => { this.addToList(name, x.it ? x.it.aisle : this.aisleOf(name)); this.toast(name + ' added to list'); } }; }),
+      steps: R.steps.map((t, i) => ({ n: i + 1, t })),
+    };
+    const deductRows = Rx.ings.filter((x) => x.have && x.it.id in s.deduct).map((x, i) => {
+      const it = x.it, v = s.deduct[it.id], setV = (nv) => this.setState({ deduct: { ...this.state.deduct, [it.id]: nv } });
+      return { name: it.name, isCount: it.count != null, isLevel: it.count == null, from: it.count != null ? it.count + ' ' + it.unit : it.level.toLowerCase(),
+        countText: v + ' ' + it.unit, dec: () => setV(Math.max(0, v - 1)), inc: () => setV(v + 1), border: i ? LINE : '0',
+        levels: this.LV.map((l) => ({ l, bg: v === l ? INK : '#EEE9E0', c: v === l ? '#fff' : INK, pick: () => setV(l) })) };
+    });
+
+    // list
+    const order = ['Produce', 'Dairy', 'Meat', 'Bakery', 'Pantry', 'Frozen', 'Drinks', 'Household', 'Other'];
+    const rows = s.list.map((r) => {
+      const inv = items.find((i) => this.same(i.name, r.name) && !i.leftover);
+      let have = '', hc = MUTED;
+      if (inv) { const lv = inv.count != null ? (inv.count === 0 ? 'Out' : inv.count + ' left') : inv.level; have = 'Have: ' + lv; if (lv === 'Low' || lv === 'Out') hc = '#B5461F'; }
+      return { ...r, qty: r.qty || '', hasQty: !!r.qty, have, hc, checked: !!r.checked, cb: r.checked ? GREEN : '#CFC6B8', cbg: r.checked ? GREEN : 'transparent',
+        nc: r.checked ? '#A39A8E' : INK, deco: r.checked ? 'line-through' : 'none',
+        toggle: () => this.setState((st) => ({ list: st.list.map((l) => (l.id === r.id ? { ...l, checked: !l.checked } : l)) })) };
+    });
+    const listGroups = order.map((a) => ({ aisle: a, rows: rows.filter((r) => (order.includes(r.aisle) ? r.aisle : 'Other') === a) })).filter((g) => g.rows.length)
+      .map((g) => ({ ...g, rows: g.rows.map((r, i) => ({ ...r, border: i ? LINE : '0' })) }));
+    const suggRaw = items.filter((i) => !i.leftover && (this.isOut(i) || (i.count == null && i.level === 'Low')) && !s.list.some((r) => this.same(r.name, i.name)));
+    const sugg = suggRaw.map((i, n) => ({ name: i.name, lvl: this.isOut(i) ? 'Out' : 'Low', border: n ? LINE : '0', add: () => this.addToList(i.name, i.aisle) }));
+    const checkedN = s.list.filter((r) => r.checked).length;
+
+    // add
+    const chipGroups = this.quick.map((g) => ({ title: g.title, chips: g.items.map((n) => { const on = s.addSel[n] != null;
+      return { n, on, bg: on ? GREEN : '#fff', c: on ? '#fff' : INK, bd: on ? GREEN : '#E2DBCF', tap: () => this.setState((st) => { const a = { ...st.addSel }; if (a[n] != null) delete a[n]; else a[n] = this.defDays(n, st.addLoc); return { addSel: a }; }) }; }) }));
+    const addN = Object.keys(s.addSel).length;
+    const addRows = Object.keys(s.addSel).map((n, i) => ({ n, border: i ? LINE : '0', dc: this.dateCtl(s.addSel[n], (v) => this.setState((st) => ({ addSel: { ...st.addSel, [n]: v } }))), remove: () => this.setState((st) => { const a = { ...st.addSel }; delete a[n]; return { addSel: a }; }) }));
+    const locChip = (cur, set) => s.locs.map((l) => ({ name: l.name, bg: l.id === cur ? INK : '#fff', c: l.id === cur ? '#fff' : INK, pick: () => set(l.id) }));
+    const seg = (opts, cur, set) => opts.map((o, i) => ({ label: o.label, bg: o.v === cur ? INK : '#fff', c: o.v === cur ? '#fff' : INK, pick: () => set(o.v) }));
+
+    // receipt
+    const rRows = s.rItems.map((r, i) => ({ ...r, border: i ? LINE : '0', rowBg: r.unsure ? '#F7F2E9' : '#fff', hasDate: r.days != null, dc: r.days != null ? this.dateCtl(r.days, (v) => this.updR(r.id, { days: v })) : {}, cb: r.on ? GREEN : '#CFC6B8', cbg: r.on ? GREEN : 'transparent',
+      nc: r.on ? INK : '#A39A8E', locName: this.locName(r.loc), ask: !!r.unsure && !r.editing, askText: 'Is this ' + r.name.toLowerCase() + '?', editing: !!r.editing, notEditing: !r.editing,
+      toggle: () => this.updR(r.id, { on: !r.on }), yes: () => this.updR(r.id, { unsure: false }), change: () => this.updR(r.id, { editing: true }),
+      onName: (e) => this.updR(r.id, { name: e.target.value }), onKey: (e) => { if (e.key === 'Enter') this.updR(r.id, { editing: false, unsure: false }); },
+      cycle: () => { const ids = ['fridge', 'freezer', 'pantry']; this.updR(r.id, { loc: ids[(ids.indexOf(r.loc) + 1) % 3] }); } }));
+    const rOn = s.rItems.filter((r) => r.on).length;
+
+    // sweep
+    const cur = byId(s.sweepQ[s.sweepI]), total = s.sweepQ.length, clamp = (v) => Math.max(0, Math.min(1, v));
+    const sweepPending = items.filter((i) => i.conf < 0.5).length;
+    const R2 = s.sweepRes;
+
+    // screens index
+    const curKey = s.sheetId ? 'item' : s.overlay === 'recipe' && s.deductOpen ? 'deduct' : s.overlay === 'receipt' ? (s.rStep === 'confirm' ? 'review' : 'receipt') : s.overlay === 'add' && s.leftoverOpen ? 'leftover' : s.overlay || s.tab;
+    const screens = [['home', 'Home'], ['kitchen', 'Kitchen'], ['item', 'Item details'], ['add', 'Add food'], ['scan', 'Barcode scan'], ['receipt', 'Receipt scan'], ['review', 'Receipt review'], ['leftover', 'Leftovers'], ['sweep', 'Sunday sweep'], ['list', 'Shopping list'], ['cook', 'Cook'], ['recipe', 'Recipe'], ['deduct', 'I cooked this'], ['settings', 'Settings'], ['recap', 'Monthly recap'], ['plus', 'Larder Plus']]
+      .map(([k, label]) => ({ label, bg: k === curKey ? INK : 'transparent', c: k === curKey ? '#fff' : INK, go: () => this.jump(k) }));
+
+    // item sheet
+    const it = s.sheetId && byId(s.sheetId);
+    const sheet = it ? {
+      name: it.name, where: this.locName(it.loc) + (it.leftover ? ' · Leftover' : it.staple ? ' · Staple' : ''), isCount: it.count != null, isLevel: it.count == null, countText: it.count + ' ' + it.unit,
+      levels: this.LV.map((l) => ({ l, bg: it.level === l ? '#fff' : 'transparent', sh: it.level === l ? '0 1px 3px rgba(30,26,22,.14)' : 'none', c: it.level === l ? INK : MUTED, pick: () => this.upd(it.id, { level: l, conf: 1 }) })),
+      dec: () => this.upd(it.id, { count: Math.max(0, it.count - 1), conf: 1 }), inc: () => this.upd(it.id, { count: it.count + 1, conf: 1 }),
+      hasDate: it.days != null, date: it.days != null ? 'Good until ' + this.dateText(it.days) : '', inText: it.days != null ? this.expIn(it.days) : '',
+      src: { FoodKeeper: 'USDA FoodKeeper estimate', Label: 'From label', You: 'Set by you' }[it.src] || '',
+      dc: it.days != null ? this.dateCtl(it.days, (v) => this.upd(it.id, { days: v, src: 'You' })) : {},
+      canOpen: !it.leftover, openBg: it.opened ? GREEN : '#D9D1C4', knob: it.opened ? '22px' : '2px',
+      toggleOpen: () => this.upd(it.id, it.opened ? { opened: false, days: it.prevDays ?? it.days, src: it.prevSrc || it.src } : { opened: true, prevDays: it.days, prevSrc: it.src, days: Math.min(it.days, 5), src: 'FoodKeeper' }),
+      isLeftover: !!it.leftover, made: it.made,
+      locs: locChip(it.loc, (id) => this.upd(it.id, { loc: id })),
+      toList: () => { this.addToList(it.name, it.aisle); this.setState({ sheetId: null }); this.toast(it.name + ' added to list'); },
+      used: () => { this.setState((st) => ({ items: it.leftover ? st.items.filter((x) => x.id !== it.id) : st.items.map((x) => (x.id === it.id ? { ...x, level: 'Out', count: x.count != null ? 0 : null, conf: 1 } : x)), stats: { ...st.stats, used: st.stats.used + 1 }, sheetId: null })); this.toast('Marked used up'); },
+      toss: () => { this.setState((st) => ({ items: st.items.filter((x) => x.id !== it.id), stats: { ...st.stats, tossed: st.stats.tossed + 1 }, sheetId: null })); this.toast(it.name + ' tossed'); },
+    } : { levels: [], locs: [] };
+
+    const tabC = (k) => (s.tab === k ? GREEN : '#8F877B'), tabF = (k) => (s.tab === k ? 1 : 0);
+    const setTab = (k) => () => this.setState({ tab: k, sheetId: null });
+    const plans = [{ k: 'year', name: 'Yearly', price: '$24.99/yr', note: '$2.08 a month' }, { k: 'month', name: 'Monthly', price: '$3.99/mo', note: '' }, { k: 'life', name: 'Lifetime', price: '$59.99', note: 'One time' }]
+      .map((p) => ({ ...p, bd: s.plan === p.k ? GREEN : '#E2DBCF', dot: s.plan === p.k ? GREEN : 'transparent', pick: () => this.setState({ plan: p.k }) }));
+    const saved$ = Math.round(s.stats.used * 1.36);
+
+    return {
+      showIndex: P.showIndex ?? true, screens,
+      isHome: s.tab === 'home', isKitchen: s.tab === 'kitchen', isList: s.tab === 'list', isCook: s.tab === 'cook',
+      tabHome: setTab('home'), tabKitchen: setTab('kitchen'), tabList: setTab('list'), tabCook: setTab('cook'),
+      cHome: tabC('home'), cKitchen: tabC('kitchen'), cList: tabC('list'), cCook: tabC('cook'),
+      fHome: tabF('home'), fKitchen: tabF('kitchen'), fList: tabF('list'), fCook: tabF('cook'),
+      openSettings: () => this.open('settings'), openRecap: () => this.open('recap'), openPlus: () => this.open('plus'),
+      openAdd: () => this.setState({ overlay: 'add', stack: [], sheetId: null }), goKitchen: setTab('kitchen'),
+      useSoon, hasSweep: sweepPending > 0, sweepCount: sweepPending, startSweep: this.startSweep, tonight,
+      recapLine: `${s.stats.used} used in time · ${s.stats.tossed} tossed`,
+      q: s.q, onQ: (e) => this.setState({ q: e.target.value }), locTabs, kItems, hasKItems: kItems.length > 0, kEmpty: kItems.length === 0,
+      addingLoc: s.addingLoc, notAddingLoc: !s.addingLoc, newLoc: s.newLoc, startAddLoc: () => this.setState({ addingLoc: true, newLoc: '' }),
+      onNewLoc: (e) => this.setState({ newLoc: e.target.value }),
+      saveLoc: () => this.saveLoc(), newLocKey: (e) => { if (e.key === 'Enter') this.saveLoc(); if (e.key === 'Escape') this.setState({ addingLoc: false }); },
+      listCount: `${s.list.length} item${s.list.length === 1 ? '' : 's'}`, listText: s.listText, onListText: (e) => this.setState({ listText: e.target.value }),
+      listKey: (e) => { if (e.key === 'Enter') this.addListText(); }, addListText: this.addListText,
+      hasSugg: sugg.length > 0, sugg, addAllSugg: () => { suggRaw.forEach((i) => this.addToList(i.name, i.aisle)); this.toast(`Added ${suggRaw.length} to list`); },
+      listGroups, showPutAway: s.tab === 'list' && !s.overlay && checkedN > 0, putAwayText: `Put away ${checkedN} item${checkedN > 1 ? 's' : ''}`, putAway: this.putAway,
+      cookFilters: [['expiring', 'Use it up'], ['quick', 'Quickest'], ['saved', 'Saved']].map(([k, label]) => ({ label, bg: s.cookFilter === k ? INK : '#fff', c: s.cookFilter === k ? '#fff' : INK, pick: () => this.setState({ cookFilter: k }) })),
+      recipeCards: cl.map(card), ideasLeftText: s.plus ? '' : `${s.ideasLeft} left this week`,
+      genIdeas: () => { if (!s.plus && s.ideasLeft <= 0) return this.toast('New ideas reset Monday'); this.setState({ ideasLeft: s.plus ? s.ideasLeft : s.ideasLeft - 1, genShown: 1, cookFilter: 'expiring' }); this.toast(s.genShown ? 'Ideas refreshed' : '2 new ideas'); },
+      ovAdd: s.overlay === 'add', closeAll: this.closeAll, back: this.back,
+      openScan: () => this.open('scan', { scanFound: false, scanDays: 10, scanLoc: 'fridge' }), openReceipt: () => { if (!s.plus && s.receiptLeft <= 0) return this.toast('Receipt scans reset Nov 1'); this.open('receipt', { rStep: 'camera' }); },
+      receiptLeftText: s.plus ? 'Unlimited' : `${s.receiptLeft} of 5 left this month`,
+      addText: s.addText, onAddText: (e) => this.setState({ addText: e.target.value }), addKey: (e) => { if (e.key === 'Enter') this.addTyped(); }, addTyped: this.addTyped,
+      addLocs: locChip(s.addLoc, (id) => this.setState({ addLoc: id })), chipGroups, hasAddSel: addN > 0, addBtnText: `Add ${addN} item${addN > 1 ? 's' : ''} to ${this.locName(s.addLoc)}`, commitAdd: this.commitAdd, addRows, addSelTitle: addN + ' selected', clearAddSel: () => this.setState({ addSel: {} }), addPadB: addN ? '380px' : '120px',
+      openLeftover: () => this.setState({ leftoverOpen: true }), closeLeftover: () => this.setState({ leftoverOpen: false }), leftoverOpen: s.leftoverOpen,
+      loName: s.loName, onLoName: (e) => this.setState({ loName: e.target.value }), saveLeftover: this.saveLeftover,
+      loMadeOpts: seg([{ v: 0, label: 'Today' }, { v: 1, label: 'Yesterday' }, { v: 2, label: '2 days ago' }], s.loMade, (v) => this.setState({ loMade: v, loDays: null })),
+      loDc: this.dateCtl(s.loDays ?? (s.loLoc === 'freezer' ? 60 : Math.max(0, 4 - s.loMade)), (v) => this.setState({ loDays: v })),
+      loLocOpts: seg([{ v: 'fridge', label: 'Fridge' }, { v: 'freezer', label: 'Freezer' }], s.loLoc, (v) => this.setState({ loLoc: v, loDays: null })),
+      ovScan: s.overlay === 'scan', scanFound: s.scanFound, scanIdle: !s.scanFound, scanHit: () => this.setState({ scanFound: true }),
+      scanLocs: locChip(s.scanLoc, (id) => this.setState({ scanLoc: id, scanDays: id === 'freezer' ? 120 : 10 })).slice(0, 3), scanDc: this.dateCtl(s.scanDays, (v) => this.setState({ scanDays: v })),
+      scanAdd: () => this.scanCommit(false), scanNext: () => this.scanCommit(true),
+      torch: () => this.setState({ torch: !s.torch }), torchBg: s.torch ? '#fff' : 'rgba(255,255,255,.14)', torchC: s.torch ? INK : '#fff',
+      ovReceiptCam: s.overlay === 'receipt' && s.rStep === 'camera', ovReceiptReview: s.overlay === 'receipt' && s.rStep === 'confirm',
+      captureReceipt: () => this.setState({ rStep: 'confirm', rItems: this.receiptSeed() }), rRows, rBtnText: `Add ${rOn} items`, addReceipt: this.addReceipt,
+      ovSweep: s.overlay === 'sweep', sweepActive: !!cur, sweepDone: s.overlay === 'sweep' && !cur, hasNextCard: !!byId(s.sweepQ[s.sweepI + 1]),
+      card: cur ? { loc: this.locName(cur.loc), name: cur.name, checked: `Last checked ${cur.checked || 7} days ago`, guess: this.levelText(cur) } : {},
+      cardT: `translate(${s.dx}px, ${s.dy}px) rotate(${s.dx / 16}deg)`, cardTr: s.dragging || s.snap ? 'none' : 'transform .23s ease-out',
+      haveOp: clamp(s.dx / 90), goneOp: clamp(-s.dx / 90), lowOp: Math.abs(s.dx) < 60 ? clamp(s.dy / 80) : 0,
+      onDown: this.onDown, onMove: this.onMove, onUp: this.onUp,
+      swHave: () => this.answer('have'), swLow: () => this.answer('low'), swGone: () => this.answer('gone'),
+      sweepProg: `${Math.min(s.sweepI + 1, total)}/${total}`, progW: (total ? (s.sweepI / total) * 100 : 0) + '%',
+      sweepSummary: `${R2.have} still here, ${R2.low} running low, ${R2.gone} gone.`, sweepHadGone: R2.gone + R2.low > 0,
+      sweepToList: () => this.setState({ overlay: null, stack: [], tab: 'list' }),
+      ovRecipe: s.overlay === 'recipe', recipe, openDeduct: this.openDeduct, deductOpen: s.deductOpen, closeDeduct: () => this.setState({ deductOpen: false }), deductRows, applyDeduct: this.applyDeduct,
+      ovSettings: s.overlay === 'settings',
+      members: s.members.map((m, i) => ({ ...m, border: i ? LINE : '0', bg: i ? '#F3E3D9' : '#E1ECE4', c: i ? '#B5461F' : GREEN })),
+      invite: () => { if (!s.plus && s.members.length >= 2) return this.toast('Free plan includes 2 members'); this.setState({ members: [...s.members, { n: 'Priya', i: 'P', role: 'Invited' }] }); this.toast('Invite sent'); },
+      locRows: s.locs.map((l, i) => ({ name: l.name, count: items.filter((x) => x.loc === l.id).length + ' items', border: i ? LINE : '0' })),
+      settingsAddLoc: () => this.setState({ overlay: null, stack: [], tab: 'kitchen', addingLoc: true, newLoc: '' }),
+      toggleDigest: () => this.setState({ digest: !s.digest }), digestBg: s.digest ? GREEN : '#D9D1C4', digestKnob: s.digest ? '22px' : '2px', digestOp: s.digest ? 1 : 0.4,
+      cycleDigest: () => s.digest && this.setState({ digestTime: (s.digestTime + 1) % 3 }), digestTime: ['8:00 AM', '12:00 PM', '5:30 PM'][s.digestTime],
+      exportCsv: () => this.toast('larder-export.csv saved'), exportJson: () => this.toast('larder-export.json saved'),
+      planLabel: s.plus ? 'Active' : '', faq: () => this.toast('Opening help'), signOut: () => this.toast('Signed out'),
+      ovRecap: s.overlay === 'recap', savedAmt: '$' + saved$, stUsed: s.stats.used, stTossed: s.stats.tossed, stCooked: s.stats.cooked,
+      plusPitch: s.plus ? 'Plus is active. Thanks for supporting Larder.' : `You saved about $${saved$} this month. A year of Plus is $24.99.`, plusCta: s.plus ? 'Manage plan' : 'Try free for 30 days',
+      ovPlus: s.overlay === 'plus', plans, buyText: s.plan === 'life' ? 'Buy lifetime' : 'Start 30-day free trial',
+      buyPlus: () => { this.setState({ plus: true, overlay: null, stack: [] }); this.toast('Larder Plus is on'); }, restore: () => this.toast('No purchases found'),
+      hasSheet: !!it, sheet, closeSheet: () => this.setState({ sheetId: null }),
+      showTopBlur: !(s.overlay === 'scan' || (s.overlay === 'receipt' && s.rStep === 'camera')), hasToast: !!s.toast, toast: s.toast || '',
+    };
+  }
+  saveLoc() {
+    const n = this.state.newLoc.trim();
+    if (!n) return this.setState({ addingLoc: false });
+    const id = 'loc' + Date.now();
+    this.setState((s) => ({ locs: [...s.locs, { id, name: n }], loc: id, addingLoc: false, newLoc: '', q: '' }));
+  }
+}
+</script>
+</body>
+</html>
+

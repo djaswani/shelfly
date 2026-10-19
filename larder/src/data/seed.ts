@@ -1,0 +1,129 @@
+// Static content and demo data from design/Larder.dc.html.
+import { isoIn, monthKey, weekKey } from '../dates';
+import { Item, Persisted, ReceiptRow, Recipe } from './types';
+
+export const RECIPES: Recipe[] = [
+  { id: 'r1', title: 'Creamy spinach chicken', time: 30, serves: 4, ings: [
+    { ref: 'chicken', amt: '4 thighs', use: 4 }, { ref: 'spinach', amt: '1 bag' }, { ref: 'cream', amt: '½ cup' },
+    { ref: 'garlic', amt: '3 cloves' }, { ref: 'onions', amt: '1 onion', use: 1 }, { ref: 'rice', amt: '1½ cups' }, { name: 'Parmesan', amt: '¼ cup' }],
+    steps: ['Season the chicken and sear it 5 minutes per side.', 'Soften the onion and garlic in the same pan.', 'Stir in the cream, then the spinach until it wilts.', 'Return the chicken and simmer 10 minutes. Serve over rice.'] },
+  { id: 'r2', title: 'Chili rice bowls', time: 15, serves: 2, ings: [
+    { ref: 'chili', amt: '2 cups' }, { ref: 'rice', amt: '1 cup' }, { ref: 'cheddar', amt: '½ cup, grated' }, { ref: 'cilantro', amt: 'A handful' }, { ref: 'salsa', amt: 'To serve' }],
+    steps: ['Cook the rice.', 'Warm the chili on the stove.', 'Spoon chili over rice and top with cheddar, cilantro and salsa.'] },
+  { id: 'r3', title: 'Strawberry yogurt parfait', time: 5, serves: 2, idea: true, batch: 0, ings: [
+    { ref: 'berries', amt: '1 cup, sliced' }, { ref: 'yogurt', amt: '1½ cups' }, { name: 'Granola', amt: '½ cup' }],
+    steps: ['Layer yogurt, strawberries and granola in two glasses.', 'Repeat and serve right away.'] },
+  { id: 'r4', title: 'Black bean quesadillas', time: 20, serves: 2, ings: [
+    { ref: 'beans', amt: '1 can', use: 1 }, { ref: 'cheddar', amt: '1 cup, grated' }, { ref: 'salsa', amt: '¼ cup' }, { ref: 'cilantro', amt: 'A handful' }, { name: 'Tortillas', amt: '4' }],
+    steps: ['Mash half the beans with salsa.', 'Fill tortillas with beans and cheddar.', 'Toast in a dry pan 2 to 3 minutes per side.'] },
+  { id: 'r5', title: 'Sourdough French toast', time: 15, serves: 2, idea: true, batch: 1, ings: [
+    { ref: 'bread', amt: '4 slices' }, { ref: 'eggs', amt: '3 eggs', use: 3 }, { ref: 'milk', amt: '½ cup' }, { ref: 'berries', amt: 'To serve' }],
+    steps: ['Whisk eggs and milk.', 'Soak the bread 20 seconds per side.', 'Cook in butter until golden. Top with strawberries.'] },
+  { id: 'r6', title: 'Cilantro garlic rice', time: 20, serves: 4, idea: true, batch: 1, ings: [
+    { ref: 'rice', amt: '1½ cups' }, { ref: 'cilantro', amt: '1 bunch' }, { ref: 'garlic', amt: '2 cloves' }, { name: 'Lime', amt: '1' }],
+    steps: ['Toast garlic in oil, then add rice and water.', 'Simmer covered 15 minutes.', 'Fold in chopped cilantro and lime juice.'] },
+];
+
+export const QUICK = [
+  { title: 'Produce', aisle: 'Produce', items: ['Bananas', 'Apples', 'Avocados', 'Lemons', 'Tomatoes', 'Lettuce', 'Carrots', 'Bell peppers', 'Potatoes', 'Cucumbers'] },
+  { title: 'Dairy & eggs', aisle: 'Dairy', items: ['Milk', 'Eggs', 'Butter', 'Yogurt', 'Cheese', 'Sour cream'] },
+  { title: 'Meat & fish', aisle: 'Meat', items: ['Chicken breast', 'Ground beef', 'Salmon', 'Bacon', 'Deli turkey'] },
+  { title: 'Bakery', aisle: 'Bakery', items: ['Bread', 'Tortillas', 'Bagels'] },
+];
+
+// Fridge shelf life in days. Placeholder until the USDA FoodKeeper dataset is wired in.
+export const LIFE: Record<string, number> = {
+  Bananas: 5, Apples: 30, Avocados: 4, Lemons: 21, Tomatoes: 5, Lettuce: 7, Carrots: 21, 'Bell peppers': 7, Potatoes: 30, Cucumbers: 7,
+  Milk: 7, Eggs: 28, Butter: 60, Yogurt: 14, Cheese: 28, 'Sour cream': 14, 'Chicken breast': 2, 'Ground beef': 2, Salmon: 2, Bacon: 7,
+  'Deli turkey': 5, Bread: 5, Tortillas: 14, Bagels: 5, 'Baby spinach': 5, 'Oat milk': 10,
+};
+
+export const AISLE_ORDER = ['Produce', 'Dairy', 'Meat', 'Bakery', 'Pantry', 'Frozen', 'Drinks', 'Household', 'Other'];
+
+type SeedItem = Omit<Item, 'expires' | 'src' | 'conf' | 'opened' | 'count' | 'level' | 'made' | 'checkedAt'> & {
+  days: number | null; level?: Item['level']; count?: number; src?: Item['src']; conf?: number; opened?: boolean; madeAgo?: number; checked?: number;
+};
+
+function I(o: SeedItem): Item {
+  const { days, madeAgo, checked, ...rest } = o;
+  return {
+    count: null, level: 'Full', opened: false, src: 'FoodKeeper', conf: 0.9, ...rest,
+    expires: days == null ? null : isoIn(days),
+    made: madeAgo == null ? undefined : isoIn(-madeAgo),
+    checkedAt: isoIn(-(checked ?? 7)),
+  };
+}
+
+export function demoItems(): Item[] {
+  return [
+    I({ id: 'spinach', name: 'Baby spinach', short: 'spinach', loc: 'fridge', level: 'Some', days: 2, aisle: 'Produce' }),
+    I({ id: 'chicken', name: 'Chicken thighs', short: 'chicken', loc: 'fridge', count: 4, unit: 'thighs', days: 1, src: 'Label', aisle: 'Meat' }),
+    I({ id: 'cream', name: 'Heavy cream', short: 'cream', loc: 'fridge', level: 'Some', days: 3, opened: true, aisle: 'Dairy' }),
+    I({ id: 'berries', name: 'Strawberries', loc: 'fridge', level: 'Some', days: 1, conf: 0.7, aisle: 'Produce' }),
+    I({ id: 'chili', name: 'Turkey chili', short: 'chili', loc: 'fridge', level: 'Some', days: 2, leftover: true, madeAgo: 3 }),
+    I({ id: 'cilantro', name: 'Cilantro', loc: 'fridge', level: 'Low', days: 3, conf: 0.4, checked: 6, aisle: 'Produce' }),
+    I({ id: 'milk', name: 'Milk', loc: 'fridge', level: 'Low', days: 4, opened: true, src: 'Label', conf: 0.35, checked: 5, aisle: 'Dairy' }),
+    I({ id: 'yogurt', name: 'Greek yogurt', loc: 'fridge', level: 'Full', days: 9, src: 'Label', aisle: 'Dairy' }),
+    I({ id: 'salsa', name: 'Salsa', loc: 'fridge', level: 'Low', days: 5, opened: true, conf: 0.3, checked: 12, aisle: 'Pantry' }),
+    I({ id: 'eggs', name: 'Eggs', loc: 'fridge', count: 7, unit: 'eggs', days: 19, src: 'Label', conf: 0.6, aisle: 'Dairy' }),
+    I({ id: 'cheddar', name: 'Cheddar', loc: 'fridge', level: 'Some', days: 18, opened: true, conf: 0.45, checked: 9, aisle: 'Dairy' }),
+    I({ id: 'butter', name: 'Butter', loc: 'fridge', level: 'Out', days: null, staple: true, aisle: 'Dairy' }),
+    I({ id: 'peas', name: 'Frozen peas', loc: 'freezer', level: 'Some', days: 240, conf: 0.6, aisle: 'Frozen' }),
+    I({ id: 'beef', name: 'Ground beef', loc: 'freezer', count: 2, unit: 'lb', days: 92, aisle: 'Meat' }),
+    I({ id: 'lasagna', name: 'Lasagna', loc: 'freezer', level: 'Some', days: 58, leftover: true, madeAgo: 16 }),
+    I({ id: 'icecream', name: 'Ice cream', loc: 'freezer', level: 'Low', days: 40, conf: 0.3, checked: 21, aisle: 'Frozen' }),
+    I({ id: 'bread', name: 'Sourdough', loc: 'pantry', level: 'Some', days: 3, conf: 0.6, aisle: 'Bakery' }),
+    I({ id: 'onions', name: 'Yellow onions', loc: 'pantry', count: 3, unit: 'onions', days: 16, aisle: 'Produce' }),
+    I({ id: 'garlic', name: 'Garlic', loc: 'pantry', level: 'Low', days: null, staple: true, conf: 0.4, checked: 14, aisle: 'Produce' }),
+    I({ id: 'rice', name: 'Jasmine rice', loc: 'pantry', level: 'Some', days: null, staple: true, aisle: 'Pantry' }),
+    I({ id: 'beans', name: 'Black beans', loc: 'pantry', count: 4, unit: 'cans', days: null, staple: true, aisle: 'Pantry' }),
+    I({ id: 'pasta', name: 'Penne', loc: 'pantry', count: 2, unit: 'boxes', days: null, staple: true, aisle: 'Pantry' }),
+    I({ id: 'oil', name: 'Olive oil', loc: 'pantry', level: 'Some', days: null, staple: true, aisle: 'Pantry' }),
+    I({ id: 'coffee', name: 'Coffee', loc: 'pantry', level: 'Low', days: null, staple: true, aisle: 'Pantry' }),
+    I({ id: 'flour', name: 'Flour', loc: 'pantry', level: 'Low', days: null, staple: true, conf: 0.55, aisle: 'Pantry' }),
+    I({ id: 'cumin', name: 'Cumin', loc: 'pantry', level: 'Low', days: null, staple: true, conf: 0.25, checked: 30, aisle: 'Pantry' }),
+    I({ id: 'water', name: 'Sparkling water', loc: 'garage', count: 12, unit: 'cans', days: null, staple: true, aisle: 'Drinks' }),
+    I({ id: 'tomatoes', name: 'Crushed tomatoes', loc: 'garage', count: 6, unit: 'cans', days: null, staple: true, aisle: 'Pantry' }),
+  ];
+}
+
+export function demoState(): Persisted {
+  return {
+    version: 1,
+    items: demoItems(),
+    list: [
+      { id: 'l1', name: 'Bananas', qty: '1 bunch', aisle: 'Produce' }, { id: 'l2', name: 'Lemons', qty: '3', aisle: 'Produce' },
+      { id: 'l3', name: 'Milk', qty: '1 gallon', aisle: 'Dairy' }, { id: 'l4', name: 'Butter', aisle: 'Dairy' },
+      { id: 'l5', name: 'Tortillas', aisle: 'Bakery' }, { id: 'l6', name: 'Coffee', aisle: 'Pantry' }, { id: 'l7', name: 'Paper towels', aisle: 'Household' },
+    ],
+    locs: [{ id: 'fridge', name: 'Fridge' }, { id: 'freezer', name: 'Freezer' }, { id: 'pantry', name: 'Pantry' }, { id: 'garage', name: 'Garage shelf' }],
+    saved: { r1: true, r2: true, r4: true },
+    stats: { used: 34, tossed: 3, cooked: 9 },
+    members: [{ n: 'Dhairya', i: 'DJ', role: 'You' }],
+    digest: true,
+    digestTime: 0,
+    plus: false,
+    receiptLeft: 4,
+    receiptMonth: monthKey(),
+    ideasLeft: 4,
+    ideasWeek: weekKey(),
+    genShown: 0,
+  };
+}
+
+// Stand-in for the AI receipt parser (see build plan: FastAPI service).
+export function receiptSeed(): ReceiptRow[] {
+  const D: Record<string, number> = { Bananas: 5, Milk: 7, Eggs: 28, 'Baby spinach': 5, 'Chicken breast': 2, Tortillas: 14, Avocados: 4, Butter: 60 };
+  const rows: Omit<ReceiptRow, 'days'>[] = [
+    { id: 'a', raw: 'BANANAS 2.31 LB', name: 'Bananas', loc: 'pantry', on: true },
+    { id: 'b', raw: 'KRO 2% RF MLK GAL', name: 'Milk', loc: 'fridge', on: true, unsure: true },
+    { id: 'c', raw: 'BRWN EGGS LG 12CT', name: 'Eggs', loc: 'fridge', on: true, qty: 12 },
+    { id: 'd', raw: 'BABY SPINACH 5OZ', name: 'Baby spinach', loc: 'fridge', on: true },
+    { id: 'e', raw: 'CHKN BRST BNLS SKNLS', name: 'Chicken breast', loc: 'fridge', on: true },
+    { id: 'f', raw: 'MISSION FLR TORT 10CT', name: 'Tortillas', loc: 'pantry', on: true },
+    { id: 'g', raw: 'AVOCADO HASS LG', name: 'Avocados', loc: 'fridge', on: true },
+    { id: 'h', raw: 'KRO BUTTER UNSLTD', name: 'Butter', loc: 'fridge', on: true },
+    { id: 'i', raw: 'BOUNTY PPR TWL 6PK', name: 'Paper towels', loc: 'pantry', on: false, nonFood: true },
+  ];
+  return rows.map((r) => ({ ...r, days: r.nonFood ? null : D[r.name] }));
+}
