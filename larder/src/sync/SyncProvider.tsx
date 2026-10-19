@@ -6,6 +6,7 @@ import { AppState } from 'react-native';
 import { Persisted } from '../data/types';
 import { useStore } from '../store';
 import { supabase } from './client';
+import { signInLink } from './links';
 import { applyRow, Coll, COLLECTIONS, COLLS, diff, emptySnapshot, mergeAll, Row, Snapshot, stable } from './engine';
 
 const KEY = 'larder.sync.v1';
@@ -215,8 +216,14 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   }, []);
 
+  // Accepts the 6-digit code, or the sign-in link from the email pasted whole. Supabase's built-in
+  // email template only has the link (editing it to show a code needs custom SMTP), and the link
+  // carries the same one-time token as `token=…`, so verifying it here signs in without opening it.
   const verifyCode = useCallback(async (email: string, code: string) => {
-    const { error } = await sb().auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'email' });
+    const link = signInLink(code);
+    const { error } = link
+      ? await sb().auth.verifyOtp({ token_hash: link.tokenHash, type: link.type })
+      : await sb().auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'email' });
     if (error) throw error;
   }, []);
 

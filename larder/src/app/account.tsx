@@ -46,8 +46,8 @@ function SignIn() {
       <TextInput value={email} onChangeText={setEmail} editable={!sent} placeholder="Email" placeholderTextColor={C.faint} autoCapitalize="none" autoComplete="email" keyboardType="email-address" textContentType="emailAddress" style={field} />
       {sent && (
         <>
-          <T size={14} color={C.muted}>We emailed a 6-digit code to {email.trim()}.</T>
-          <TextInput value={code} onChangeText={setCode} placeholder="Code" placeholderTextColor={C.faint} keyboardType="number-pad" textContentType="oneTimeCode" autoComplete="one-time-code" maxLength={8} autoFocus style={[field, { letterSpacing: 4, fontSize: 20 }]} />
+          <T size={14} color={C.muted} style={{ lineHeight: 20 }}>We emailed {email.trim()}. Enter the code, or copy the sign-in link from the email (press and hold it, don’t tap it) and paste it here.</T>
+          <TextInput value={code} onChangeText={setCode} placeholder="Code or sign-in link" placeholderTextColor={C.faint} autoCapitalize="none" autoCorrect={false} textContentType="oneTimeCode" autoComplete="one-time-code" autoFocus style={field} />
         </>
       )}
       {busy ? <ActivityIndicator color={C.green} /> : sent ? (

@@ -26,7 +26,10 @@ On your iPhone: plug it in and run `npx expo run:ios --device`; Xcode signs with
 ## Supabase setup (once per project)
 
 1. SQL editor → paste and run `supabase/migrations/20261019000000_household_sync.sql` (safe to re-run).
-2. Authentication → Email Templates → **Magic Link**: include `{{ .Token }}` so the email carries a 6-digit code.
+2. Sign-in works with the default email: paste its sign-in link into the app (or, with custom SMTP,
+   add `{{ .Token }}` to the Magic Link template to send a 6-digit code). Supabase's built-in email
+   only reaches members of your Supabase organization and a few emails an hour, so **set up custom
+   SMTP before inviting real households**.
 3. `.env` holds the project URL and **publishable** key (never the secret key).
 
 Sync design: one row per item / list row / location (`data` jsonb), soft deletes, server-stamped
