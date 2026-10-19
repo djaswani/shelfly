@@ -3,13 +3,14 @@ import { View } from 'react-native';
 import { ItemRow } from '../../components/ItemRow';
 import { Btn, Card, H1, Icon, PhotoPlaceholder, Screen, T } from '../../components/ui';
 import { monthName, todayHeading } from '../../dates';
-import { isOut, itemDays, needsSweep, SWEEP_MAX } from '../../logic';
+import { isOut, itemDays, monthRecap, needsSweep, SWEEP_MAX } from '../../logic';
 import { byExpiring, cardText, visibleRecipes } from '../../recipes';
 import { useStore } from '../../store';
 import { C } from '../../theme';
 
 export default function Home() {
   const { s } = useStore();
+  const recap = monthRecap(s);
   const useSoon = s.items
     .filter((i) => itemDays(i) != null && itemDays(i)! <= 3 && !isOut(i))
     .sort((a, b) => itemDays(a)! - itemDays(b)!);
@@ -72,7 +73,7 @@ export default function Home() {
         <Icon name="bar_chart" size={24} color={C.green} />
         <View style={{ flex: 1 }}>
           <T w={600}>{monthName()}</T>
-          <T size={13.5} color={C.muted} style={{ marginTop: 2 }}>{s.stats.used} used in time · {s.stats.tossed} tossed</T>
+          <T size={13.5} color={C.muted} style={{ marginTop: 2 }}>{recap.used} used in time · {recap.tossed} tossed</T>
         </View>
         <Icon name="chevron_right" color={C.faint} />
       </Btn>

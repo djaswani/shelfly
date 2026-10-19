@@ -5,9 +5,7 @@ import { useRef, useState } from 'react';
 import { ActivityIndicator, Platform, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DateControl } from '../components/DateControl';
-import { Sheet } from '../components/Sheet';
-import { BigBtn, Btn, Card, CheckCircle, Icon, RoundBtn, S, Screen, T } from '../components/ui';
-import { receiptSample } from '../data/seed';
+import { BigBtn, Btn, Card, CheckCircle, Icon, RoundBtn, Screen, T } from '../components/ui';
 import { ReceiptRow } from '../data/types';
 import { locName, merge, same } from '../logic';
 import { readReceiptText, ocrAvailable } from '../receipt/ocr';
@@ -40,8 +38,8 @@ function Capture({ onText }: { onText: (text: string) => boolean }) {
   const [permission, requestPermission] = useCameraPermissions();
   const camera = useRef<CameraView>(null);
   const [reading, setReading] = useState(false);
-  const [pasteOpen, setPasteOpen] = useState(false);
   const isWeb = Platform.OS === 'web';
+  const unavailable = isWeb ? 'Receipt scanning works in the Larder phone app.' : 'Receipt scanning needs the Larder app build (not Expo Go).';
 
   const read = async (uri: string, width?: number) => {
     setReading(true);
@@ -55,13 +53,13 @@ function Capture({ onText }: { onText: (text: string) => boolean }) {
   };
 
   const capture = async () => {
-    if (!ocrAvailable) return setPasteOpen(true);
+    if (!ocrAvailable) return showToast(unavailable);
     const photo = await camera.current?.takePictureAsync({ quality: 0.9 });
     if (photo) await read(photo.uri, photo.width);
   };
 
   const pick = async () => {
-    if (!ocrAvailable) return setPasteOpen(true);
+    if (!ocrAvailable) return showToast(unavailable);
     const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
     if (!res.canceled && res.assets[0]) await read(res.assets[0].uri, res.assets[0].width);
   };
@@ -74,7 +72,7 @@ function Capture({ onText }: { onText: (text: string) => boolean }) {
       <View style={{ position: 'absolute', top: insets.top + 12, left: 20, right: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <RoundBtn icon="close" size={42} bg="rgba(255,255,255,0.14)" color="#fff" onPress={() => goBack()} label="Close" />
         <T w={600} color="#fff">Scan receipt</T>
-        <RoundBtn icon="edit_note" size={42} bg="rgba(255,255,255,0.14)" color="#fff" onPress={() => setPasteOpen(true)} label="Type or paste receipt text" />
+        <View style={{ width: 42 }} />
       </View>
       <View style={{ position: 'absolute', top: insets.top + 80, bottom: 150 + insets.bottom, left: 0, right: 0, alignItems: 'center', justifyContent: 'center' }}>
         <View style={{ width: 250, height: '100%', maxHeight: 520, borderRadius: 20, borderWidth: 2.5, borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.8)', alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 }}>
@@ -85,7 +83,7 @@ function Capture({ onText }: { onText: (text: string) => boolean }) {
             </>
           ) : !ocrAvailable ? (
             <T size={13} color="#B5AEA4" style={{ textAlign: 'center', lineHeight: 19 }}>
-              {isWeb ? 'Receipt photos work in the phone app.' : 'Receipt photos need the Larder app build (not Expo Go).'} You can type or paste the receipt text instead.
+              {unavailable}
             </T>
           ) : permission && !permission.granted ? (
             <>
@@ -107,24 +105,7 @@ function Capture({ onText }: { onText: (text: string) => boolean }) {
           <View style={{ flex: 1, borderRadius: 33, backgroundColor: '#fff' }} />
         </Btn>
       </View>
-      {pasteOpen && <PasteSheet onClose={() => setPasteOpen(false)} onText={(t) => onText(t) && setPasteOpen(false)} />}
     </View>
-  );
-}
-
-function PasteSheet({ onClose, onText }: { onClose: () => void; onText: (text: string) => void }) {
-  const [text, setText] = useState('');
-  return (
-    <Sheet onClose={onClose} z={50}>
-      <T display size={26}>Receipt text</T>
-      <T size={14} color={C.muted}>Type or paste the item lines, one per line.</T>
-      <TextInput value={text} onChangeText={setText} multiline autoFocus placeholder={'KRO 2% RF MLK GAL   3.49\nCHKN BRST BNLS SKNLS   11.84'} placeholderTextColor={C.faint}
-        style={[S.input, { flex: 0, minHeight: 160, maxHeight: 280, borderRadius: 14, backgroundColor: '#fff', padding: 14, textAlignVertical: 'top', fontFamily: Platform.select({ ios: 'Menlo', default: 'monospace' }), fontSize: 14 }]} />
-      <View style={{ flexDirection: 'row', gap: 10 }}>
-        <BigBtn title="Use a sample" bg={C.btnSoft} color={C.ink} onPress={() => setText(receiptSample)} style={{ flex: 1 }} />
-        <BigBtn title="Read" onPress={() => text.trim() && onText(text)} style={{ flex: 1 }} />
-      </View>
-    </Sheet>
   );
 }
 

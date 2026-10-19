@@ -31,6 +31,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     AsyncStorage.getItem(KEY)
       .then((raw) => {
         const loaded: Persisted = raw ? JSON.parse(raw) : demoState();
+        // Older saves stored the digest time as an index into three presets.
+        if (loaded.digestTime < 3) loaded.digestTime = [8 * 60, 12 * 60, 17 * 60 + 30][loaded.digestTime] ?? 8 * 60;
         setS(refreshAllowances(loaded, monthKey(), weekKey()));
       })
       .catch(() => {})

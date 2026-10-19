@@ -1,3 +1,5 @@
+import { File, Paths } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { Platform, Share } from 'react-native';
 import { Persisted } from './data/types';
 import { locName } from './logic';
@@ -26,6 +28,14 @@ export async function shareFile(filename: string, content: string, mime: string)
     URL.revokeObjectURL(url);
     return;
   }
-  // TODO: write a real file with expo-file-system + expo-sharing so it can be saved to Files.
+  // Write a real file so the share sheet offers "Save to Files", AirDrop, Mail and so on.
+  if (await Sharing.isAvailableAsync()) {
+    const file = new File(Paths.cache, filename);
+    if (file.exists) file.delete();
+    file.create();
+    file.write(content);
+    await Sharing.shareAsync(file.uri, { mimeType: mime, UTI: mime === 'text/csv' ? 'public.comma-separated-values-text' : 'public.json', dialogTitle: filename });
+    return;
+  }
   await Share.share({ title: filename, message: content });
 }

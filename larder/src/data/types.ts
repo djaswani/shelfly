@@ -64,6 +64,10 @@ export type ReceiptMemory = Record<string, Correction>;
 
 export type Stats = { used: number; tossed: number; cooked: number };
 
+// What happened to food, for the monthly recap. Local to this device for now.
+export type EventKind = 'used' | 'tossed' | 'cooked';
+export type Ev = { kind: EventKind; name: string; at: string }; // at: YYYY-MM-DD
+
 export type Plan = 'year' | 'month' | 'life';
 
 export type Persisted = {
@@ -75,7 +79,7 @@ export type Persisted = {
   stats: Stats;
   members: Member[];
   digest: boolean;
-  digestTime: number;
+  digestTime: number; // minutes after midnight (older saves used 0-2, see store.tsx)
   plus: boolean;
   receiptLeft: number;
   receiptMonth: string;
@@ -83,4 +87,5 @@ export type Persisted = {
   ideasWeek: string;
   genShown: number;
   receiptMemory?: ReceiptMemory;
+  events?: Ev[];
 };

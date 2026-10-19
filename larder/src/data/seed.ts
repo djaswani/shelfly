@@ -1,6 +1,6 @@
 // Static content and demo data from design/Larder.dc.html.
 import { isoIn, monthKey, weekKey } from '../dates';
-import { Item, Persisted, Recipe } from './types';
+import { Ev, Item, Persisted, Recipe } from './types';
 
 export const RECIPES: Recipe[] = [
   { id: 'r1', title: 'Creamy spinach chicken', time: 30, serves: 4, ings: [
@@ -102,7 +102,8 @@ export function demoState(): Persisted {
     stats: { used: 34, tossed: 3, cooked: 9 },
     members: [{ n: 'Dhairya', i: 'DJ', role: 'You' }],
     digest: true,
-    digestTime: 0,
+    digestTime: 8 * 60,
+    events: demoEvents(),
     plus: false,
     receiptLeft: 4,
     receiptMonth: monthKey(),
@@ -112,19 +113,16 @@ export function demoState(): Persisted {
   };
 }
 
-// Sample receipt text for trying the receipt reader without a photo (web, Expo Go, demos).
-export const receiptSample = `KROGER
-10/17/2026 6:42 PM
-BANANAS                 1.36 F
-2.31 lb @ 0.59 / lb
-KRO 2% RF MLK GAL       3.49 F
-BRWN EGGS LG 12CT       4.29 F
-BABY SPINACH 5OZ        3.99 F
-CHKN BRST BNLS SKNLS   11.84 F
-MISSION FLR TORT 10CT   3.29 F
-AVOCADO HASS LG         1.25 F
-KRO BUTTER UNSLTD       4.49 F
-BOUNTY PPR TWL 6PK     12.99 T
-SUBTOTAL               47.99
-TAX                     0.93
-TOTAL                  48.92`;
+// A believable month so far for the recap: a few items used most days, the odd toss and dinner.
+function demoEvents(): Ev[] {
+  const names = ['Milk', 'Eggs', 'Spinach', 'Bananas', 'Yogurt', 'Bread', 'Chicken thighs', 'Cheddar', 'Apples', 'Carrots'];
+  const today = Number(isoIn(0).slice(8, 10));
+  const out: Ev[] = [];
+  for (let d = 1; d < today; d++) {
+    const at = isoIn(d - today);
+    for (let k = 0; k < 1 + (d % 3); k++) out.push({ kind: 'used', name: names[(d * 3 + k) % names.length], at });
+    if (d % 6 === 0) out.push({ kind: 'cooked', name: 'Dinner', at });
+    if (d % 9 === 4) out.push({ kind: 'tossed', name: ['Cilantro', 'Sour cream', 'Sourdough'][Math.floor(d / 9) % 3], at });
+  }
+  return out;
+}

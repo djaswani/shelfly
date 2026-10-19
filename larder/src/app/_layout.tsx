@@ -4,9 +4,11 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ItemSheet, Toast } from '../components/ItemSheet';
+import { notificationsAllowed, scheduleDigest } from '../notifications';
 import { StoreProvider, useStore } from '../store';
 import { SyncProvider } from '../sync/SyncProvider';
 import { C } from '../theme';
@@ -51,6 +53,23 @@ function Gate() {
       </Stack>
       <ItemSheet />
       <Toast />
+      <DigestScheduler />
     </>
   );
+}
+
+// Keeps the next week of digest notifications in step with the inventory.
+function DigestScheduler() {
+  const { s } = useStore();
+  const { items, digest, digestTime } = s;
+  useEffect(() => {
+    const t = setTimeout(() => {
+      // The digest is on by default, so ask for permission once, shortly after the first launch.
+      (digest ? notificationsAllowed(true) : Promise.resolve())
+        .then(() => scheduleDigest(items, digest, digestTime))
+        .catch(() => {});
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [items, digest, digestTime]);
+  return null;
 }

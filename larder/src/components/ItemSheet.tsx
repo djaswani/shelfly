@@ -1,7 +1,7 @@
 import { ScrollView, View } from 'react-native';
 import { isoIn, longDate } from '../dates';
 import { LEVELS } from '../data/types';
-import { addToList, confirmed, expIn, itemDays, locName, openedDays, updItem } from '../logic';
+import { addToList, confirmed, expIn, itemDays, locName, logEvent, openedDays, updItem } from '../logic';
 import { useStore } from '../store';
 import { C } from '../theme';
 import { openedLifeDays } from '../foodkeeper';
@@ -28,16 +28,15 @@ export function ItemSheet() {
       : { opened: true, prevExpires: it.expires, prevSrc: it.src, expires: isoIn(openedDays(it)), src: openedLifeDays(it.name, it.loc) != null ? 'FoodKeeper' : 'Estimate' });
 
   const used = () => {
-    set((st) => ({
+    set((st) => logEvent({
       ...st,
       items: it.leftover ? st.items.filter((x) => x.id !== it.id) : st.items.map((x) => (x.id === it.id ? { ...x, level: 'Out', count: x.count != null ? 0 : null, ...confirmed() } : x)),
-      stats: { ...st.stats, used: st.stats.used + 1 },
-    }));
+    }, 'used', it.name));
     close();
     showToast('Marked used up');
   };
   const toss = () => {
-    set((st) => ({ ...st, items: st.items.filter((x) => x.id !== it.id), stats: { ...st.stats, tossed: st.stats.tossed + 1 } }));
+    set((st) => logEvent({ ...st, items: st.items.filter((x) => x.id !== it.id) }, 'tossed', it.name));
     close();
     showToast(it.name + ' tossed');
   };

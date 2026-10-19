@@ -1,7 +1,7 @@
 // Pure inventory logic ported from design/Larder.dc.html. Every function takes and returns plain data.
-import { daysFromToday, isoIn } from './dates';
+import { daysFromToday, isoIn, monthKey } from './dates';
 import { LIFE, QUICK } from './data/seed';
-import { ExpirySource, Item, Level, LEVELS, ListRow, Persisted } from './data/types';
+import { EventKind, ExpirySource, Item, Level, LEVELS, ListRow, Persisted } from './data/types';
 import { openedLifeDays, shelfLifeDays } from './foodkeeper';
 import { C } from './theme';
 
@@ -169,4 +169,27 @@ export function refreshAllowances(s: Persisted, month: string, week: string): Pe
   if (s.receiptMonth !== month) out = { ...out, receiptLeft: 5, receiptMonth: month };
   if (s.ideasWeek !== week) out = { ...out, ideasLeft: 5, ideasWeek: week };
   return out;
+}
+
+// ── Events (monthly recap) ───────────────────────────────────
+const EVENTS_MAX = 600;
+
+export function logEvent(s: Persisted, kind: EventKind, name: string): Persisted {
+  const events = [...(s.events ?? []), { kind, name, at: isoIn(0) }].slice(-EVENTS_MAX);
+  return { ...s, events, stats: { ...s.stats, [kind]: s.stats[kind] + 1 } };
+}
+
+export type MonthRecap = { used: number; tossed: number; cooked: number; tossedNames: string[]; weeks: { label: string; used: number; tossed: number }[] };
+
+// Counts for one month (default: this one), with week 1 = days 1-7 and so on.
+export function monthRecap(s: Persisted, month = monthKey()): MonthRecap {
+  const evs = (s.events ?? []).filter((e) => e.at.startsWith(month));
+  const count = (k: EventKind) => evs.filter((e) => e.kind === k).length;
+  const lastDay = month === monthKey() ? Number(isoIn(0).slice(8, 10)) : 31;
+  const weeks = Array.from({ length: Math.ceil(lastDay / 7) }, (_, w) => {
+    const inWeek = evs.filter((e) => Math.floor((Number(e.at.slice(8, 10)) - 1) / 7) === w);
+    return { label: `Week ${w + 1}`, used: inWeek.filter((e) => e.kind === 'used').length, tossed: inWeek.filter((e) => e.kind === 'tossed').length };
+  });
+  const tossedNames = [...new Set(evs.filter((e) => e.kind === 'tossed').map((e) => e.name))];
+  return { used: count('used'), tossed: count('tossed'), cooked: count('cooked'), tossedNames, weeks };
 }
