@@ -8,6 +8,7 @@ import { Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ItemSheet, Toast } from '../components/ItemSheet';
 import { StoreProvider, useStore } from '../store';
+import { SyncProvider } from '../sync/SyncProvider';
 import { C } from '../theme';
 
 export default function RootLayout() {
@@ -24,7 +25,9 @@ export default function RootLayout() {
         {/* On web, keep the phone-width layout centered */}
         <View style={{ flex: 1, backgroundColor: Platform.OS === 'web' ? '#E8E3D9' : C.bg, alignItems: 'center' }}>
           <View style={{ flex: 1, width: '100%', maxWidth: Platform.OS === 'web' ? 440 : undefined, backgroundColor: C.bg, overflow: 'hidden' }}>
-            <Gate />
+            <SyncProvider>
+              <Gate />
+            </SyncProvider>
           </View>
         </View>
         <StatusBar style="dark" />

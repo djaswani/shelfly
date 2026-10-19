@@ -23,6 +23,15 @@ On your iPhone: plug it in and run `npx expo run:ios --device`; Xcode signs with
 `plugins/`: `withSceneLifecycle` (iOS 27 requires the UIScene life cycle) and
 `withQuotedBundleScript` (lets the build work from a folder with a space in its path).
 
+## Supabase setup (once per project)
+
+1. SQL editor → paste and run `supabase/migrations/20261019000000_household_sync.sql` (safe to re-run).
+2. Authentication → Email Templates → **Magic Link**: include `{{ .Token }}` so the email carries a 6-digit code.
+3. `.env` holds the project URL and **publishable** key (never the secret key).
+
+Sync design: one row per item / list row / location (`data` jsonb), soft deletes, server-stamped
+`updated_at`, last write wins per object. Row level security limits every row to its household's members.
+
 ## What's real vs. stand-in
 
 | Feature | Status |
@@ -35,7 +44,7 @@ On your iPhone: plug it in and run `npx expo run:ios --device`; Xcode signs with
 | "New ideas" recipes | Stand-in: reveals prewritten ideas. Needs AI generation |
 | Expiry estimates | USDA FoodKeeper (612 foods, `src/foodkeeper.ts`); unmatched foods fall back to a rough table and are labelled "Rough estimate" |
 | Confidence decay | Built: c(t) = e^(-t/τ), τ from shelf life (4–30 days); "Probably" below 0.5, Sunday sweep below 0.3 (max 15 items) |
-| Accounts, household sharing, sync, invites | Not started. Needs Supabase |
+| Accounts, household sharing, sync, invites | Built (`src/sync/`): email-code sign-in, create/join a household by 6-letter code (free plan: 2 members), live two-way sync of items, list and locations with offline catch-up. Needs the one-time Supabase setup below |
 | Larder Plus purchases | Not started. Needs RevenueCat + store accounts (dev builds just flip a flag) |
 | Daily digest notification | Setting only. Needs expo-notifications |
 | Monthly recap weekly chart / tossed list | Design placeholders until there's an events log |

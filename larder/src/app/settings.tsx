@@ -5,18 +5,21 @@ import { View } from 'react-native';
 import { Btn, Card, H1, Icon, RoundBtn, rowBorder, Screen, SectionLabel, T, Toggle } from '../components/ui';
 import { shareFile, toCsv, toJson } from '../export';
 import { useStore } from '../store';
+import { useSync } from '../sync/SyncProvider';
 import { C } from '../theme';
 
 const TIMES = ['8:00 AM', '12:00 PM', '5:30 PM'];
 
 export default function Settings() {
   const { s, set, showToast, reset } = useStore();
-
-  const invite = () => {
-    if (!s.plus && s.members.length >= 2) return showToast('Free plan includes 2 members');
-    // TODO: real invites need accounts + household sync (Supabase).
-    showToast('Invites need accounts, coming with sync');
-  };
+  const sync = useSync();
+  const me = sync.session?.user.id;
+  // Signed in to a household: show its real members. Otherwise the local profile.
+  const people = sync.household
+    ? sync.members.map((m) => ({ key: m.user_id, i: (m.display_name || '?').slice(0, 2).toUpperCase(), n: m.display_name || 'Member', role: m.user_id === me ? 'You' : 'Member' }))
+    : s.members.map((m) => ({ key: m.n, i: m.i, n: m.n, role: m.role }));
+  const syncLine = !sync.session ? 'Sign in to share and sync' : !sync.household ? 'Start or join a household'
+    : sync.status === 'offline' ? 'Offline, will sync later' : `Synced · ${sync.household.name}`;
 
   return (
     <Screen gap={20} bottom={48}>
@@ -26,8 +29,8 @@ export default function Settings() {
       </View>
 
       <Group label="Household">
-        {s.members.map((m, i) => (
-          <View key={m.n} style={[{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 16 }, rowBorder(i)]}>
+        {people.map((m, i) => (
+          <View key={m.key} style={[{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 16 }, rowBorder(i)]}>
             <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: i ? C.warnSoft : C.greenSoft, alignItems: 'center', justifyContent: 'center' }}>
               <T size={13} w={700} color={i ? C.warn : C.green}>{m.i}</T>
             </View>
@@ -35,11 +38,15 @@ export default function Settings() {
             <T size={14} color={C.muted}>{m.role}</T>
           </View>
         ))}
-        <Row onPress={invite} border>
+        <Row onPress={() => router.push('/account')} border>
           <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: C.greenSoft, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="person_add" size={20} color={C.green} />
+            <Icon name={sync.household ? 'person_add' : 'cloud_sync'} size={20} color={C.green} />
           </View>
-          <T w={600} color={C.green} style={{ flex: 1 }}>Invite someone</T>
+          <View style={{ flex: 1 }}>
+            <T w={600} color={C.green}>{sync.household ? 'Invite someone' : 'Share this kitchen'}</T>
+            <T size={13} color={C.muted} style={{ marginTop: 2 }}>{syncLine}</T>
+          </View>
+          <Icon name="chevron_right" color={C.faint} />
         </Row>
       </Group>
 
