@@ -1,6 +1,6 @@
 import { Pressable, View } from 'react-native';
 import { Item } from '../data/types';
-import { dayColor, dayText, itemDays, levelText, locName } from '../logic';
+import { confidence, dayColor, dayText, itemDays, levelText, locName, PROBABLY } from '../logic';
 import { useStore } from '../store';
 import { C } from '../theme';
 import { shortWeekday } from './format';
@@ -12,7 +12,7 @@ export function Meter({ it }: { it: Item }) {
   const f = FILL[it.level] ?? 0;
   const on = f <= 1 ? C.warnBar : C.ink;
   return (
-    <View style={{ flexDirection: 'row', gap: 2, opacity: it.conf < 0.5 ? 0.4 : 1 }}>
+    <View style={{ flexDirection: 'row', gap: 2, opacity: confidence(it) < PROBABLY ? 0.4 : 1 }}>
       {[1, 2, 3].map((n) => (
         <View key={n} style={{ width: 6, height: 10, borderRadius: 2, backgroundColor: f >= n ? on : C.meterOff }} />
       ))}

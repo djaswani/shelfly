@@ -1,7 +1,7 @@
 export type Level = 'Full' | 'Some' | 'Low' | 'Out';
 export const LEVELS: Level[] = ['Full', 'Some', 'Low', 'Out'];
 
-export type ExpirySource = 'FoodKeeper' | 'Label' | 'You';
+export type ExpirySource = 'FoodKeeper' | 'Estimate' | 'Label' | 'You';
 
 export type Item = {
   id: string;
@@ -22,6 +22,7 @@ export type Item = {
   staple?: boolean;
   aisle?: string;
   checkedAt?: string; // YYYY-MM-DD, last time the user confirmed it
+  confAt?: string; // YYYY-MM-DD the conf value was set; decay runs from here (defaults to checkedAt)
 };
 
 export type ListRow = { id: string; name: string; qty?: string; aisle: string; checked?: boolean };

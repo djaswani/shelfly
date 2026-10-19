@@ -5,9 +5,8 @@ import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Sheet } from '../../components/Sheet';
 import { BigBtn, Btn, Card, Icon, PhotoPlaceholder, RoundBtn, rowBorder, T } from '../../components/ui';
-import { isoIn } from '../../dates';
 import { Level, LEVELS } from '../../data/types';
-import { addToList, aisleOf, dayText, isOut, itemDays, levelText, nextLevel, same } from '../../logic';
+import { addToList, aisleOf, confirmed, dayText, isOut, itemDays, levelText, nextLevel, same } from '../../logic';
 import { findRecipe, recipeView } from '../../recipes';
 import { useStore } from '../../store';
 import { C } from '../../theme';
@@ -43,7 +42,7 @@ export default function RecipeScreen() {
     set((st) => ({
       ...st,
       items: st.items.map((i) => (i.id in deduct
-        ? (i.count != null ? { ...i, count: deduct[i.id] as number, conf: 1, checkedAt: isoIn(0) } : { ...i, level: deduct[i.id] as Level, conf: 1, checkedAt: isoIn(0) })
+        ? (i.count != null ? { ...i, count: deduct[i.id] as number, ...confirmed() } : { ...i, level: deduct[i.id] as Level, ...confirmed() })
         : i)),
       stats: { ...st.stats, cooked: st.stats.cooked + 1 },
     }));

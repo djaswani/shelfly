@@ -22,7 +22,8 @@ npx expo start --web    # browser preview
 | CSV / JSON export | Built (share sheet on phone, download on web) |
 | Receipt reading | Stand-in: camera works, review shows a sample receipt. Needs the AI parsing service |
 | "New ideas" recipes | Stand-in: reveals prewritten ideas. Needs AI generation |
-| Expiry estimates | Small hard-coded table. Swap in the USDA FoodKeeper dataset |
+| Expiry estimates | USDA FoodKeeper (612 foods, `src/foodkeeper.ts`); unmatched foods fall back to a rough table and are labelled "Rough estimate" |
+| Confidence decay | Built: c(t) = e^(-t/τ), τ from shelf life (4–30 days); "Probably" below 0.5, Sunday sweep below 0.3 (max 15 items) |
 | Accounts, household sharing, sync, invites | Not started. Needs Supabase |
 | Larder Plus purchases | Not started. Needs RevenueCat + store accounts (dev builds just flip a flag) |
 | Daily digest notification | Setting only. Needs expo-notifications |

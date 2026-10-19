@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { ItemRow } from '../../components/ItemRow';
 import { Btn, Card, H1, Icon, PhotoPlaceholder, Screen, T } from '../../components/ui';
 import { monthName, todayHeading } from '../../dates';
-import { isOut, itemDays } from '../../logic';
+import { isOut, itemDays, needsSweep, SWEEP_MAX } from '../../logic';
 import { byExpiring, cardText, visibleRecipes } from '../../recipes';
 import { useStore } from '../../store';
 import { C } from '../../theme';
@@ -13,7 +13,7 @@ export default function Home() {
   const useSoon = s.items
     .filter((i) => itemDays(i) != null && itemDays(i)! <= 3 && !isOut(i))
     .sort((a, b) => itemDays(a)! - itemDays(b)!);
-  const sweepCount = s.items.filter((i) => i.conf < 0.5).length;
+  const sweepCount = Math.min(SWEEP_MAX, s.items.filter(needsSweep).length);
   const tonight = visibleRecipes(s).sort(byExpiring)[0];
   const t = tonight && cardText(tonight);
   const initials = s.members[0]?.i ?? 'Me';

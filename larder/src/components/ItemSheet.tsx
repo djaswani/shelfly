@@ -1,34 +1,36 @@
 import { ScrollView, View } from 'react-native';
 import { isoIn, longDate } from '../dates';
 import { LEVELS } from '../data/types';
-import { addToList, expIn, itemDays, locName, updItem } from '../logic';
+import { addToList, confirmed, expIn, itemDays, locName, openedDays, updItem } from '../logic';
 import { useStore } from '../store';
 import { C } from '../theme';
+import { openedLifeDays } from '../foodkeeper';
 import { DateControl } from './DateControl';
 import { madeText } from './format';
 import { Sheet } from './Sheet';
 import { Btn, Icon, Pill, RoundBtn, shadow, T, Toggle } from './ui';
 
-const SRC = { FoodKeeper: 'USDA FoodKeeper estimate', Label: 'From label', You: 'Set by you' };
+const SRC = { FoodKeeper: 'USDA FoodKeeper estimate', Estimate: 'Rough estimate', Label: 'From label', You: 'Set by you' };
 
 export function ItemSheet() {
   const { s, set, sheetId, openSheet, showToast } = useStore();
   const it = sheetId ? s.items.find((i) => i.id === sheetId) : undefined;
   if (!it) return null;
   const close = () => openSheet(null);
-  const upd = (patch: Parameters<typeof updItem>[2]) => set((st) => updItem(st, it.id, { ...patch, checkedAt: isoIn(0) }));
+  // Any edit in the sheet counts as the user confirming the item.
+  const upd = (patch: Parameters<typeof updItem>[2]) => set((st) => updItem(st, it.id, { ...patch, ...confirmed() }));
   const d = itemDays(it);
   const where = locName(s, it.loc) + (it.leftover ? ' · Leftover' : it.staple ? ' · Staple' : '');
 
   const toggleOpen = () =>
     upd(it.opened
       ? { opened: false, expires: it.prevExpires ?? it.expires, src: it.prevSrc || it.src }
-      : { opened: true, prevExpires: it.expires, prevSrc: it.src, expires: isoIn(Math.min(d ?? 5, 5)), src: 'FoodKeeper' });
+      : { opened: true, prevExpires: it.expires, prevSrc: it.src, expires: isoIn(openedDays(it)), src: openedLifeDays(it.name, it.loc) != null ? 'FoodKeeper' : 'Estimate' });
 
   const used = () => {
     set((st) => ({
       ...st,
-      items: it.leftover ? st.items.filter((x) => x.id !== it.id) : st.items.map((x) => (x.id === it.id ? { ...x, level: 'Out', count: x.count != null ? 0 : null, conf: 1 } : x)),
+      items: it.leftover ? st.items.filter((x) => x.id !== it.id) : st.items.map((x) => (x.id === it.id ? { ...x, level: 'Out', count: x.count != null ? 0 : null, ...confirmed() } : x)),
       stats: { ...st.stats, used: st.stats.used + 1 },
     }));
     close();
@@ -60,7 +62,7 @@ export function ItemSheet() {
           {LEVELS.map((l) => {
             const on = it.level === l;
             return (
-              <Btn key={l} onPress={() => upd({ level: l, conf: 1 })} style={[{ flex: 1, height: 40, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: on ? '#fff' : 'transparent' }, on && shadow(0.14, 3, 1)]}>
+              <Btn key={l} onPress={() => upd({ level: l })} style={[{ flex: 1, height: 40, borderRadius: 11, alignItems: 'center', justifyContent: 'center', backgroundColor: on ? '#fff' : 'transparent' }, on && shadow(0.14, 3, 1)]}>
                 <T size={15} w={600} color={on ? C.ink : C.muted}>{l}</T>
               </Btn>
             );
@@ -70,8 +72,8 @@ export function ItemSheet() {
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fff', borderRadius: 16, padding: 8, paddingLeft: 16 }}>
           <T w={600}>{it.count} {it.unit}</T>
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            <RoundBtn icon="remove" size={40} bg={C.chip} label="Fewer" onPress={() => upd({ count: Math.max(0, (it.count ?? 0) - 1), conf: 1 })} />
-            <RoundBtn icon="add" size={40} bg={C.chip} label="More" onPress={() => upd({ count: (it.count ?? 0) + 1, conf: 1 })} />
+            <RoundBtn icon="remove" size={40} bg={C.chip} label="Fewer" onPress={() => upd({ count: Math.max(0, (it.count ?? 0) - 1) })} />
+            <RoundBtn icon="add" size={40} bg={C.chip} label="More" onPress={() => upd({ count: (it.count ?? 0) + 1 })} />
           </View>
         </View>
       )}

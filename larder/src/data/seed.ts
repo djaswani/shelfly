@@ -51,6 +51,7 @@ function I(o: SeedItem): Item {
     expires: days == null ? null : isoIn(days),
     made: madeAgo == null ? undefined : isoIn(-madeAgo),
     checkedAt: isoIn(-(checked ?? 7)),
+    confAt: isoIn(0), // demo confidence values start today and decay from here
   };
 }
 
