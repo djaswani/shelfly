@@ -5,3 +5,9 @@ export function goBack() {
   if (router.canGoBack()) router.back();
   else router.replace('/');
 }
+
+// Close every open modal (Add → Receipt → …) and land back on the tabs.
+export function closeAll() {
+  if (router.canDismiss()) router.dismissAll();
+  else router.replace('/');
+}

@@ -46,7 +46,7 @@ export default function Home() {
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
             <T size={17} w={600} color="#fff">Sunday sweep</T>
-            <T size={14} color={C.greenText} style={{ marginTop: 2 }}>{sweepCount} items to check</T>
+            <T size={14} color={C.greenText} style={{ marginTop: 2 }}>{sweepCount} item{sweepCount === 1 ? '' : 's'} to check</T>
           </View>
           <Btn onPress={() => router.push('/sweep')} style={{ height: 40, paddingHorizontal: 18, borderRadius: 20, backgroundColor: '#fff', justifyContent: 'center' }}>
             <T size={15} w={700} color={C.green}>Start</T>

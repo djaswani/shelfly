@@ -1,6 +1,6 @@
 // Static content and demo data from design/Larder.dc.html.
 import { isoIn, monthKey, weekKey } from '../dates';
-import { Item, Persisted, ReceiptRow, Recipe } from './types';
+import { Item, Persisted, Recipe } from './types';
 
 export const RECIPES: Recipe[] = [
   { id: 'r1', title: 'Creamy spinach chicken', time: 30, serves: 4, ings: [
@@ -112,19 +112,19 @@ export function demoState(): Persisted {
   };
 }
 
-// Stand-in for the AI receipt parser (see build plan: FastAPI service).
-export function receiptSeed(): ReceiptRow[] {
-  const D: Record<string, number> = { Bananas: 5, Milk: 7, Eggs: 28, 'Baby spinach': 5, 'Chicken breast': 2, Tortillas: 14, Avocados: 4, Butter: 60 };
-  const rows: Omit<ReceiptRow, 'days'>[] = [
-    { id: 'a', raw: 'BANANAS 2.31 LB', name: 'Bananas', loc: 'pantry', on: true },
-    { id: 'b', raw: 'KRO 2% RF MLK GAL', name: 'Milk', loc: 'fridge', on: true, unsure: true },
-    { id: 'c', raw: 'BRWN EGGS LG 12CT', name: 'Eggs', loc: 'fridge', on: true, qty: 12 },
-    { id: 'd', raw: 'BABY SPINACH 5OZ', name: 'Baby spinach', loc: 'fridge', on: true },
-    { id: 'e', raw: 'CHKN BRST BNLS SKNLS', name: 'Chicken breast', loc: 'fridge', on: true },
-    { id: 'f', raw: 'MISSION FLR TORT 10CT', name: 'Tortillas', loc: 'pantry', on: true },
-    { id: 'g', raw: 'AVOCADO HASS LG', name: 'Avocados', loc: 'fridge', on: true },
-    { id: 'h', raw: 'KRO BUTTER UNSLTD', name: 'Butter', loc: 'fridge', on: true },
-    { id: 'i', raw: 'BOUNTY PPR TWL 6PK', name: 'Paper towels', loc: 'pantry', on: false, nonFood: true },
-  ];
-  return rows.map((r) => ({ ...r, days: r.nonFood ? null : D[r.name] }));
-}
+// Sample receipt text for trying the receipt reader without a photo (web, Expo Go, demos).
+export const receiptSample = `KROGER
+10/17/2026 6:42 PM
+BANANAS                 1.36 F
+2.31 lb @ 0.59 / lb
+KRO 2% RF MLK GAL       3.49 F
+BRWN EGGS LG 12CT       4.29 F
+BABY SPINACH 5OZ        3.99 F
+CHKN BRST BNLS SKNLS   11.84 F
+MISSION FLR TORT 10CT   3.29 F
+AVOCADO HASS LG         1.25 F
+KRO BUTTER UNSLTD       4.49 F
+BOUNTY PPR TWL 6PK     12.99 T
+SUBTOTAL               47.99
+TAX                     0.93
+TOTAL                  48.92`;

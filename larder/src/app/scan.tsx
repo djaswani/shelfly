@@ -1,4 +1,4 @@
-import { goBack } from '../nav';
+import { closeAll, goBack } from '../nav';
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRef, useState } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, TextInput, View } from 'react-native';
@@ -68,7 +68,7 @@ export default function Scan() {
     if (!name) return;
     set((st) => ({ ...st, items: merge(st.items, name, loc, 1, days) }));
     showToast(name + ' added');
-    if (next) reset(); else goBack();
+    if (next) reset(); else closeAll();
   };
 
   const pickLoc = (id: string) => { setLoc(id); setDays(id === 'freezer' ? 120 : 10); };

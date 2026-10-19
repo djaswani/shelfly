@@ -47,6 +47,7 @@ export type Recipe = {
 export type ReceiptRow = {
   id: string;
   raw: string;
+  key?: string; // normalized receipt text, used to remember corrections
   name: string;
   loc: string;
   on: boolean;
@@ -56,6 +57,10 @@ export type ReceiptRow = {
   nonFood?: boolean;
   days: number | null;
 };
+
+// Remembered receipt-line fixes, keyed by normalized receipt text (build plan: `products` table, local for now).
+export type Correction = { name: string; loc?: string; nonFood?: boolean };
+export type ReceiptMemory = Record<string, Correction>;
 
 export type Stats = { used: number; tossed: number; cooked: number };
 
@@ -77,4 +82,5 @@ export type Persisted = {
   ideasLeft: number;
   ideasWeek: string;
   genShown: number;
+  receiptMemory?: ReceiptMemory;
 };

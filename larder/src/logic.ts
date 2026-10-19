@@ -109,12 +109,13 @@ export function mk(name: string, loc: string, extra?: Partial<Item>): Item {
   };
 }
 
-// Add a purchase to the inventory, topping up an existing row of the same name when there is one.
+// Add a purchase to the inventory, topping up an existing row of the same food in the same place
+// (fresh beef in the fridge and frozen beef in the freezer stay separate).
 export function merge(items: Item[], name: string, loc: string, qty?: number, days?: number | null): Item[] {
   const out = items.slice();
   const est = estimate(name, loc);
   const src: ExpirySource = days != null && days !== est.days ? 'You' : est.src;
-  const idx = out.findIndex((i) => same(i.name, name) && !i.leftover);
+  const idx = out.findIndex((i) => same(i.name, name) && i.loc === loc && !i.leftover);
   if (idx >= 0) {
     const it = out[idx];
     const cur = itemDays(it);
