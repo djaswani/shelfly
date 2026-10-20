@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { View } from 'react-native';
 import { ItemRow } from '../../components/ItemRow';
-import { Btn, Card, H1, Icon, PhotoPlaceholder, Screen, T } from '../../components/ui';
+import { Btn, Card, H1, Icon, RecipePhoto, Screen, T } from '../../components/ui';
 import { monthName, todayHeading } from '../../dates';
 import { isOut, itemDays, monthRecap, needsSweep, SWEEP_MAX } from '../../logic';
 import { byExpiring, cardText, visibleRecipes } from '../../recipes';
@@ -59,7 +59,7 @@ export default function Home() {
         <View style={{ gap: 12 }}>
           <T display size={22}>Tonight</T>
           <Btn onPress={() => router.push(`/recipe/${tonight.r.id}`)} style={{ backgroundColor: '#fff', borderRadius: 20, padding: 12, flexDirection: 'row', gap: 14, alignItems: 'center' }}>
-            <PhotoPlaceholder height={92} width={92} radius={14} />
+            <RecipePhoto uri={tonight.r.image} height={92} width={92} radius={14} />
             <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
               <T size={17} w={600}>{tonight.r.title}</T>
               <T size={13.5} color={C.muted}>{t.meta}</T>

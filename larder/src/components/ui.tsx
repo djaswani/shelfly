@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { ReactNode } from 'react';
-import { Pressable, PressableProps, ScrollView, StyleProp, StyleSheet, Text, TextProps, TextStyle, View, ViewStyle } from 'react-native';
+import { ReactNode, useState } from 'react';
+import { Image, Pressable, PressableProps, ScrollView, StyleProp, StyleSheet, Text, TextProps, TextStyle, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { C, F } from '../theme';
 
@@ -141,6 +141,16 @@ export function PhotoPlaceholder({ height, width, label = 'dish photo', radius =
     <View style={[{ height, width, borderRadius: radius, backgroundColor: C.photoA, alignItems: 'center', justifyContent: 'center' }, style]}>
       <T size={10} w={500} color={C.photoText} style={{ fontFamily: undefined }}>{label}</T>
     </View>
+  );
+}
+
+// A recipe's photo, or the placeholder when it has none or it fails to load (offline, dead link).
+export function RecipePhoto({ uri, height, width, radius = 0 }: { uri?: string; height: number; width?: number; radius?: number }) {
+  const [failed, setFailed] = useState<string | null>(null);
+  if (!uri || failed === uri) return <PhotoPlaceholder height={height} width={width} radius={radius} />;
+  return (
+    <Image source={{ uri }} onError={() => setFailed(uri)} resizeMode="cover" accessibilityIgnoresInvertColors
+      style={{ height, width: width ?? '100%', borderRadius: radius, backgroundColor: C.photoA }} />
   );
 }
 

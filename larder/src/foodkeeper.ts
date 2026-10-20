@@ -19,9 +19,9 @@ const SPECIAL = new Set(['canned', 'can', 'cooked', 'homemade', 'dried', 'dry', 
   'smoked', 'pickled', 'opened', 'mix', 'leftover', 'evaporated', 'condensed', 'ultra', 'pasteurized', 'ultrapasteurized',
   'prepared', 'powdered', 'instant', 'stuffed', 'breaded', 'extract', 'juice', 'sauce']);
 
-const words = (t: string) => t.toLowerCase().split(/[^a-z]+/).filter(Boolean);
+export const words = (t: string) => t.toLowerCase().split(/[^a-z]+/).filter(Boolean);
 // Crude singular form so "bananas"/"banana" and "berries"/"berry" meet.
-const stem = (w: string) => (w.endsWith('ies') ? w.slice(0, -3) + 'y' : w.endsWith('oes') ? w.slice(0, -2) : w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);
+export const stem = (w: string) => (w.endsWith('ies') ? w.slice(0, -3) + 'y' : w.endsWith('oes') ? w.slice(0, -2) : w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);
 const stems = (t: string) => new Set(words(t).map(stem));
 
 const INDEX = PRODUCTS.map((p) => ({

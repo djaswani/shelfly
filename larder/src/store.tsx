@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { monthKey, weekKey } from './dates';
-import { demoState } from './data/seed';
+import { demoState, RECIPES } from './data/seed';
 import { Persisted } from './data/types';
 import { refreshAllowances } from './logic';
 
@@ -33,6 +33,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const loaded: Persisted = raw ? JSON.parse(raw) : demoState();
         // Older saves stored the digest time as an index into three presets.
         if (loaded.digestTime < 3) loaded.digestTime = [8 * 60, 12 * 60, 17 * 60 + 30][loaded.digestTime] ?? 8 * 60;
+        // Recipes used to be static; older saves start with the same ones.
+        if (!Array.isArray(loaded.recipes)) loaded.recipes = RECIPES;
         setS(refreshAllowances(loaded, monthKey(), weekKey()));
       })
       .catch(() => {})

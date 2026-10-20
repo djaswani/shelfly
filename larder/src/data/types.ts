@@ -31,15 +31,17 @@ export type Loc = { id: string; name: string };
 
 export type Member = { n: string; i: string; role: string };
 
+// `ref` links to a kitchen item by id; without it the item is found by `name` (src/ingredients.ts).
 export type RecipeIngredient = { ref?: string; name?: string; amt: string; use?: number };
 
 export type Recipe = {
   id: string;
   title: string;
-  time: number;
-  serves: number;
-  idea?: boolean; // generated idea rather than a saved recipe
-  batch?: number;
+  time: number; // minutes, 0 when unknown
+  serves: number; // 0 when unknown
+  origin?: 'saved' | 'idea'; // ideas are replaced on the next refresh unless saved; missing = saved
+  image?: string;
+  source?: { name: string; url: string };
   ings: RecipeIngredient[];
   steps: string[];
 };
@@ -85,7 +87,8 @@ export type Persisted = {
   receiptMonth: string;
   ideasLeft: number;
   ideasWeek: string;
-  genShown: number;
+  // Saved recipes and the latest ideas. TODO: sync recipes to the household through Supabase.
+  recipes: Recipe[];
   receiptMemory?: ReceiptMemory;
   events?: Ev[];
 };
