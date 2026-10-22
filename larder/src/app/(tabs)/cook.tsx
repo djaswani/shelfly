@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Platform, TextInput, View } from 'react-native';
 import { Sheet } from '../../components/Sheet';
 import { BigBtn, Btn, H1, Icon, Pill, RecipePhoto, S, Screen, T } from '../../components/ui';
@@ -23,15 +23,16 @@ export default function Cook() {
   if (filter === 'saved') cards = cards.filter((x) => s.saved[x.r.id]);
   cards.sort(filter === 'quick' ? byTime : byExpiring);
 
-  const genIdeas = async () => {
+  // charge: false for the automatic first batch, which shouldn't use up a weekly refresh.
+  const genIdeas = async (charge = true) => {
     if (busy) return;
-    if (!s.plus && s.ideasLeft <= 0) return openGate('ideas');
+    if (charge && !s.plus && s.ideasLeft <= 0) return openGate('ideas');
     setBusy('ideas');
     try {
       const ideas = await fetchIdeas(s);
       if (!ideas.length) return showToast('No new ideas for what you have right now');
       // The weekly allowance only counts refreshes that worked.
-      set((st) => ({ ...replaceIdeas(st, ideas), ideasLeft: st.plus ? st.ideasLeft : st.ideasLeft - 1 }));
+      set((st) => ({ ...replaceIdeas(st, ideas), ideasLeft: st.plus || !charge ? st.ideasLeft : st.ideasLeft - 1 }));
       setFilter('expiring');
       showToast(ideas.length === 1 ? '1 new idea' : `${ideas.length} new ideas`);
     } catch {
@@ -40,6 +41,15 @@ export default function Cook() {
       setBusy(null);
     }
   };
+
+  // First visit with no recipes: fetch a batch on the house.
+  const autoFetched = useRef(false);
+  useEffect(() => {
+    if (autoFetched.current || s.recipes.length || !s.items.length) return;
+    autoFetched.current = true;
+    genIdeas(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const addFromLink = async () => {
     if (!link || busy) return;
@@ -77,7 +87,7 @@ export default function Cook() {
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {FILTERS.map(([k, label]) => <Pill key={k} label={label} active={filter === k} height={36} size={14.5} onPress={() => setFilter(k)} />)}
         </View>
-        <RowBtn icon="refresh" title="New ideas from your kitchen" onPress={genIdeas} busy={busy === 'ideas'}
+        <RowBtn icon="refresh" title="New ideas from your kitchen" onPress={() => genIdeas()} busy={busy === 'ideas'}
           right={!s.plus && <T size={13} color={C.muted}>{s.ideasLeft} left this week</T>} />
         <RowBtn icon="link" title="Add a recipe from a link" onPress={() => setLink({ url: '', err: '' })} />
         {cards.map((x) => {
@@ -100,7 +110,12 @@ export default function Cook() {
             </Btn>
           );
         })}
-        {cards.length === 0 && <T color={C.muted} style={{ textAlign: 'center', paddingVertical: 32 }}>No saved recipes yet.</T>}
+        {cards.length === 0 && busy !== 'ideas' && (
+          <T color={C.muted} style={{ textAlign: 'center', paddingVertical: 32, paddingHorizontal: 12, lineHeight: 22 }}>
+            {filter === 'saved' ? 'No saved recipes yet. Tap the bookmark on a recipe to keep it here.'
+              : s.items.length ? 'Tap New ideas to find meals that use what’s in your kitchen.' : 'Add some food first, then Shelfly can suggest meals.'}
+          </T>
+        )}
       </Screen>
 
       {link && (

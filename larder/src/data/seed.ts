@@ -1,29 +1,6 @@
 // Static content and demo data from design/Shelfly.dc.html.
 import { isoIn, monthKey, weekKey } from '../dates';
-import { Ev, Item, Persisted, Recipe } from './types';
-
-// Starting recipes for new installs (and older saves from before recipes were user data).
-export const RECIPES: Recipe[] = [
-  { id: 'r1', title: 'Creamy spinach chicken', time: 30, serves: 4, ings: [
-    { ref: 'chicken', amt: '4 thighs', use: 4 }, { ref: 'spinach', amt: '1 bag' }, { ref: 'cream', amt: '½ cup' },
-    { ref: 'garlic', amt: '3 cloves' }, { ref: 'onions', amt: '1 onion', use: 1 }, { ref: 'rice', amt: '1½ cups' }, { name: 'Parmesan', amt: '¼ cup' }],
-    steps: ['Season the chicken and sear it 5 minutes per side.', 'Soften the onion and garlic in the same pan.', 'Stir in the cream, then the spinach until it wilts.', 'Return the chicken and simmer 10 minutes. Serve over rice.'] },
-  { id: 'r2', title: 'Chili rice bowls', time: 15, serves: 2, ings: [
-    { ref: 'chili', amt: '2 cups' }, { ref: 'rice', amt: '1 cup' }, { ref: 'cheddar', amt: '½ cup, grated' }, { ref: 'cilantro', amt: 'A handful' }, { ref: 'salsa', amt: 'To serve' }],
-    steps: ['Cook the rice.', 'Warm the chili on the stove.', 'Spoon chili over rice and top with cheddar, cilantro and salsa.'] },
-  { id: 'r3', title: 'Strawberry yogurt parfait', time: 5, serves: 2, origin: 'idea', ings: [
-    { ref: 'berries', amt: '1 cup, sliced' }, { ref: 'yogurt', amt: '1½ cups' }, { name: 'Granola', amt: '½ cup' }],
-    steps: ['Layer yogurt, strawberries and granola in two glasses.', 'Repeat and serve right away.'] },
-  { id: 'r4', title: 'Black bean quesadillas', time: 20, serves: 2, ings: [
-    { ref: 'beans', amt: '1 can', use: 1 }, { ref: 'cheddar', amt: '1 cup, grated' }, { ref: 'salsa', amt: '¼ cup' }, { ref: 'cilantro', amt: 'A handful' }, { name: 'Tortillas', amt: '4' }],
-    steps: ['Mash half the beans with salsa.', 'Fill tortillas with beans and cheddar.', 'Toast in a dry pan 2 to 3 minutes per side.'] },
-  { id: 'r5', title: 'Sourdough French toast', time: 15, serves: 2, origin: 'idea', ings: [
-    { ref: 'bread', amt: '4 slices' }, { ref: 'eggs', amt: '3 eggs', use: 3 }, { ref: 'milk', amt: '½ cup' }, { ref: 'berries', amt: 'To serve' }],
-    steps: ['Whisk eggs and milk.', 'Soak the bread 20 seconds per side.', 'Cook in butter until golden. Top with strawberries.'] },
-  { id: 'r6', title: 'Cilantro garlic rice', time: 20, serves: 4, origin: 'idea', ings: [
-    { ref: 'rice', amt: '1½ cups' }, { ref: 'cilantro', amt: '1 bunch' }, { ref: 'garlic', amt: '2 cloves' }, { name: 'Lime', amt: '1' }],
-    steps: ['Toast garlic in oil, then add rice and water.', 'Simmer covered 15 minutes.', 'Fold in chopped cilantro and lime juice.'] },
-];
+import { Ev, Item, Persisted } from './types';
 
 export const QUICK = [
   { title: 'Produce', aisle: 'Produce', items: ['Bananas', 'Apples', 'Avocados', 'Lemons', 'Tomatoes', 'Lettuce', 'Carrots', 'Bell peppers', 'Potatoes', 'Cucumbers'] },
@@ -99,7 +76,7 @@ export function demoState(): Persisted {
       { id: 'l5', name: 'Tortillas', aisle: 'Bakery' }, { id: 'l6', name: 'Coffee', aisle: 'Pantry' }, { id: 'l7', name: 'Paper towels', aisle: 'Household' },
     ],
     locs: [{ id: 'fridge', name: 'Fridge' }, { id: 'freezer', name: 'Freezer' }, { id: 'pantry', name: 'Pantry' }, { id: 'garage', name: 'Garage shelf' }],
-    saved: { r1: true, r2: true, r4: true },
+    saved: {},
     stats: { used: 34, tossed: 3, cooked: 9 },
     members: [{ n: 'Dhairya', i: 'DJ', role: 'You' }],
     digest: true,
@@ -110,7 +87,7 @@ export function demoState(): Persisted {
     receiptMonth: monthKey(),
     ideasLeft: 4,
     ideasWeek: weekKey(),
-    recipes: RECIPES,
+    recipes: [],
   };
 }
 

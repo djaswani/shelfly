@@ -152,8 +152,8 @@ eq('meal id/origin/source', [mr.id, mr.origin, mr.source?.name], ['mdb52772', 'i
 eq('meal ingredients', mr.ings, [{ name: 'Soy sauce', amt: '3/4 cup' }, { name: 'Chicken breasts', amt: '2', use: 2 }, { name: 'Baby spinach', amt: '' }]);
 eq('meal steps', mr.steps, ['Preheat oven to 350° F.', 'Combine soy sauce and sugar.', 'Bake 35 minutes.']);
 eq('search terms: four soonest, then two staples', searchTerms(demo.items, () => 0.5).map((t) => t.weight), [2, 2, 2, 2, 1, 1]);
-const withIdea: Persisted = { ...demo, recipes: [...demo.recipes, { ...mr, origin: 'saved' }] };
-eq('replaceIdeas keeps saved ones', replaceIdeas(withIdea, []).recipes.map((r) => r.id), ['r1', 'r2', 'r4', 'mdb52772']);
+const withIdea: Persisted = { ...demo, recipes: [{ ...mr, origin: 'saved' }, { ...mr, id: 'mdb1', origin: 'idea' }] };
+eq('replaceIdeas keeps saved ones', replaceIdeas(withIdea, []).recipes.map((r) => r.id), ['mdb52772']);
 
 async function live() {
   const args = process.argv.slice(2);

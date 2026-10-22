@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { monthKey, weekKey } from './dates';
-import { demoState, RECIPES } from './data/seed';
+import { demoState } from './data/seed';
 import { Persisted } from './data/types';
 import type { GateKind } from './components/PlusGate';
 import { refreshAllowances } from './logic';
@@ -41,7 +41,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         // Older saves stored the digest time as an index into three presets.
         if (loaded.digestTime < 3) loaded.digestTime = [8 * 60, 12 * 60, 17 * 60 + 30][loaded.digestTime] ?? 8 * 60;
         // Recipes used to be static; older saves start with the same ones.
-        if (!Array.isArray(loaded.recipes)) loaded.recipes = RECIPES;
+        // The hand-written starter recipes (r1-r6) were retired; TheMealDB ideas replace them.
+        loaded.recipes = (Array.isArray(loaded.recipes) ? loaded.recipes : []).filter((r) => !/^r[1-6]$/.test(r.id));
         setS(refreshAllowances(loaded, monthKey(), weekKey()));
       })
       .catch(() => {})

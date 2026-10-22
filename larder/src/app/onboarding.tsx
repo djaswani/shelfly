@@ -49,7 +49,7 @@ export default function Onboarding() {
     });
     set((st) => ({
       ...st, onboarded: true, householdName: household, people: size + 1, locs: kept, items,
-      list: [], events: [], stats: { used: 0, tossed: 0, cooked: 0 }, saved: {},
+      list: [], events: [], buys: {}, stats: { used: 0, tossed: 0, cooked: 0 }, saved: {},
       members: [{ n: 'You', i: '', role: 'You' }], digest, digestTime: time,
       // Cached ideas were picked for the old kitchen; new ones come from Cook.
       recipes: st.recipes.filter((r) => r.origin !== 'idea'),
@@ -184,7 +184,7 @@ export default function Onboarding() {
                     <T size={13} color={C.muted}>{timeText(time)}</T>
                   </View>
                   <T size={15} w={600}>Use the spinach and chicken today</T>
-                  <T size={14} color="#3D3730" style={{ lineHeight: 19 }}>Creamy spinach chicken uses both. 30 min.</T>
+                  <T size={14} color="#3D3730" style={{ lineHeight: 19 }}>Chicken &amp; spinach pasta uses both.</T>
                 </View>
               </View>
               <Field label="Send it at">
