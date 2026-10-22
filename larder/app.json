@@ -46,7 +46,21 @@
       "./plugins/withSceneLifecycle",
       "@react-native-community/datetimepicker",
       "expo-sharing",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-share-intent",
+        {
+          "iosActivationRules": {
+            "NSExtensionActivationSupportsWebURLWithMaxCount": 1,
+            "NSExtensionActivationSupportsWebPageWithMaxCount": 1,
+            "NSExtensionActivationSupportsText": true
+          },
+          "iosShareExtensionName": "Save to Shelfly",
+          "androidIntentFilters": [
+            "text/*"
+          ]
+        }
+      ]
     ],
     "scheme": "larder",
     "experiments": {

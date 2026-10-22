@@ -97,7 +97,15 @@ export default function RecipeScreen() {
               ))}
             </View>
           )}
-          <View style={{ gap: 10 }}>
+          {!x.ings.length && (
+            // Saved from a post with no ingredient list in its caption: point back to the original.
+            <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, gap: 12 }}>
+              <T w={600}>No ingredient list in this post</T>
+              <T size={14} color={C.muted} style={{ lineHeight: 20 }}>Shelfly saved the link so you can find it again. The recipe is in the video{R.source ? ` on ${R.source.name}` : ''}.</T>
+              {R.source && <BigBtn title={`Watch on ${R.source.name}`} icon="play_circle" height={48} onPress={() => Linking.openURL(R.source!.url).catch(() => showToast('Couldn’t open the link'))} />}
+            </View>
+          )}
+          {x.ings.length > 0 && <View style={{ gap: 10 }}>
             <T size={18} w={700}>Ingredients</T>
             <Card>
               {x.ings.map((ing, i) => {
@@ -127,8 +135,8 @@ export default function RecipeScreen() {
                 );
               })}
             </Card>
-          </View>
-          <View style={{ gap: 12 }}>
+          </View>}
+          {R.steps.length > 0 && <View style={{ gap: 12 }}>
             <T size={18} w={700}>Steps</T>
             {R.steps.map((t, i) => (
               <View key={i} style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
@@ -138,7 +146,7 @@ export default function RecipeScreen() {
                 <T style={{ flex: 1, lineHeight: 24, paddingTop: 2 }}>{t}</T>
               </View>
             ))}
-          </View>
+          </View>}
           {!isIdea(R) && (
             <Btn onPress={remove} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: 48 }}>
               <Icon name="delete_outline" size={20} color={C.warn} />
@@ -147,9 +155,9 @@ export default function RecipeScreen() {
           )}
         </View>
       </ScrollView>
-      <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingTop: 12, paddingHorizontal: 20, paddingBottom: 16 + insets.bottom, backgroundColor: C.bg, borderTopWidth: 1, borderTopColor: C.line }}>
+      {x.ings.length > 0 && <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingTop: 12, paddingHorizontal: 20, paddingBottom: 16 + insets.bottom, backgroundColor: C.bg, borderTopWidth: 1, borderTopColor: C.line }}>
         <BigBtn title="I cooked this" icon="skillet" height={56} onPress={openDeduct} />
-      </View>
+      </View>}
 
       {deduct && (
         <Sheet onClose={() => setDeduct(null)}>

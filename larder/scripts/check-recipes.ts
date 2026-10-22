@@ -2,6 +2,7 @@
 //   --live           also ask TheMealDB for ideas for the demo kitchen
 //   --page <url|file> also read the recipe from a real page (or a saved .html file)
 import { demoState } from '../src/data/seed';
+import { captionText, recipeFromCaption, socialName } from '../src/shareImport';
 import { Persisted } from '../src/data/types';
 import { matchItem, nameScore, parseIngredient } from '../src/ingredients';
 import { fetchIdeas, mealToRecipe, replaceIdeas, searchTerms } from '../src/mealdb';
@@ -154,6 +155,15 @@ eq('meal steps', mr.steps, ['Preheat oven to 350° F.', 'Combine soy sauce and s
 eq('search terms: four soonest, then two staples', searchTerms(demo.items, () => 0.5).map((t) => t.weight), [2, 2, 2, 2, 1, 1]);
 const withIdea: Persisted = { ...demo, recipes: [{ ...mr, origin: 'saved' }, { ...mr, id: 'mdb1', origin: 'idea' }] };
 eq('replaceIdeas keeps saved ones', replaceIdeas(withIdea, []).recipes.map((r) => r.id), ['mdb52772']);
+
+// ── Shared social posts ──────────────────────────────────────
+const cap = recipeFromCaption('Garlic butter pasta 🍝 so easy!\n\nIngredients:\n- 200g spaghetti\n- 3 cloves garlic\n- 2 tbsp butter\n\nMethod:\n1. Boil the pasta.\n2. Melt butter with garlic and toss.\n#pasta @friend', { url: 'https://tiktok.com/x', source: 'TikTok' });
+eq('caption: title, kind', [cap.recipe.title, cap.kind], ['Garlic butter pasta so easy', 'caption']);
+eq('caption: ingredients', cap.recipe.ings.map((g) => g.name), ['Spaghetti', 'Garlic', 'Butter']);
+eq('caption: steps', cap.recipe.steps, ['Boil the pasta.', 'Melt butter with garlic and toss.']);
+eq('caption without a recipe → link', recipeFromCaption('POV: cleaning the fridge 😭 #relatable', { url: 'u', source: 'TikTok' }).kind, 'link');
+eq('instagram description prefix', captionText('1,234 likes, 56 comments - mia on May 1, 2026: "Lemon pasta"'), 'Lemon pasta');
+eq('social hosts', ['https://www.tiktok.com/@a/video/1', 'https://vm.tiktok.com/x', 'https://www.instagram.com/reel/x', 'https://youtu.be/x', 'https://bbc.co.uk/food'].map(socialName), ['TikTok', 'TikTok', 'Instagram', 'YouTube', undefined]);
 
 async function live() {
   const args = process.argv.slice(2);

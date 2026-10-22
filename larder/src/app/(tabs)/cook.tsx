@@ -1,11 +1,10 @@
 import { router } from 'expo-router';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Platform, TextInput, View } from 'react-native';
+import { ActivityIndicator, TextInput, View } from 'react-native';
 import { Sheet } from '../../components/Sheet';
 import { BigBtn, Btn, H1, Icon, Pill, RecipePhoto, S, Screen, T } from '../../components/ui';
-import { uid } from '../../logic';
 import { fetchIdeas, replaceIdeas } from '../../mealdb';
-import { importRecipe, NoRecipeError, normalizeUrl } from '../../recipeImport';
+import { normalizeUrl } from '../../recipeImport';
 import { byExpiring, byTime, cardText, isIdea, visibleRecipes } from '../../recipes';
 import { useStore } from '../../store';
 import { C } from '../../theme';
@@ -16,7 +15,7 @@ const FILTERS: [Filter, string][] = [['expiring', 'Use it up'], ['quick', 'Quick
 export default function Cook() {
   const { s, set, showToast, openGate } = useStore();
   const [filter, setFilter] = useState<Filter>('expiring');
-  const [busy, setBusy] = useState<'ideas' | 'link' | null>(null);
+  const [busy, setBusy] = useState<'ideas' | null>(null);
   const [link, setLink] = useState<{ url: string; err: string } | null>(null);
 
   let cards = visibleRecipes(s);
@@ -51,33 +50,13 @@ export default function Cook() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const addFromLink = async () => {
-    if (!link || busy) return;
+  // Same path as "Share to Shelfly": recipe sites, plus TikTok/Instagram/YouTube captions.
+  const addFromLink = () => {
+    if (!link) return;
     const url = normalizeUrl(link.url);
-    if (!url) return setLink({ ...link, err: 'Paste the link to a recipe page.' });
-    const known = s.recipes.find((r) => r.source?.url === url);
-    if (known) {
-      setLink(null);
-      return router.push(`/recipe/${known.id}`);
-    }
-    setBusy('link');
-    setLink({ ...link, err: '' });
-    try {
-      const r = { ...(await importRecipe(url)), id: uid('r') };
-      set((st) => ({ ...st, recipes: [r, ...st.recipes], saved: { ...st.saved, [r.id]: true } }));
-      setLink(null);
-      showToast('Recipe added');
-      router.push(`/recipe/${r.id}`);
-    } catch (e) {
-      const err = e instanceof NoRecipeError
-        ? 'We couldn’t find a recipe on that page. Try the link to the recipe itself.'
-        : Platform.OS === 'web'
-          ? 'That site doesn’t let browsers read its pages. Try it in the Shelfly app.'
-          : 'Couldn’t open that page. Check the link and your connection.';
-      setLink((l) => (l ? { ...l, err } : l));
-    } finally {
-      setBusy(null);
-    }
+    if (!url) return setLink({ ...link, err: 'Paste the link to a recipe page or post.' });
+    setLink(null);
+    router.push({ pathname: '/import', params: { url } });
   };
 
   return (
@@ -122,14 +101,14 @@ export default function Cook() {
         <Sheet onClose={() => !busy && setLink(null)}>
           <View>
             <T display size={26}>Add a recipe</T>
-            <T size={15} color={C.muted} style={{ marginTop: 4 }}>Paste a link to a recipe page.</T>
+            <T size={15} color={C.muted} style={{ marginTop: 4 }}>Paste a link to a recipe page, or a TikTok, Instagram or YouTube post. You can also share straight to Shelfly from those apps.</T>
           </View>
           <TextInput value={link.url} onChangeText={(url) => setLink({ url, err: '' })} onSubmitEditing={addFromLink}
             placeholder="https://" placeholderTextColor={C.faint} autoFocus autoCapitalize="none" autoCorrect={false}
             keyboardType="url" returnKeyType="go" editable={!busy}
             style={[S.input, { flex: 0, height: 50, borderRadius: 14, backgroundColor: '#fff', paddingHorizontal: 14 }]} />
           {!!link.err && <T size={14} color={C.warn}>{link.err}</T>}
-          <BigBtn title={busy === 'link' ? 'Reading the page…' : 'Add recipe'} height={56} onPress={addFromLink} bg={link.url.trim() ? C.green : C.faint} />
+          <BigBtn title="Add recipe" height={56} onPress={addFromLink} bg={link.url.trim() ? C.green : C.faint} />
         </Sheet>
       )}
     </View>
