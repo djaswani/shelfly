@@ -9,7 +9,7 @@ export async function lookupBarcode(code: string): Promise<Product | null> {
   if (cache.has(code)) return cache.get(code)!;
   const url = `https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}.json?fields=product_name,brands,quantity,image_front_small_url`;
   // OFF asks apps to identify themselves; browsers don't allow setting User-Agent.
-  const headers: Record<string, string> = Platform.OS === 'web' ? {} : { 'User-Agent': 'Larder/0.1 (pantry app prototype)' };
+  const headers: Record<string, string> = Platform.OS === 'web' ? {} : { 'User-Agent': 'Shelfly/0.1 (pantry app prototype)' };
   const res = await fetch(url, { headers });
   if (!res.ok) {
     if (res.status === 404) { cache.set(code, null); return null; }

@@ -72,7 +72,7 @@ export default function RecipeScreen() {
     <View style={{ flex: 1, backgroundColor: C.bg }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 120 + insets.bottom }} showsVerticalScrollIndicator={false}>
         <View>
-          <RecipePhoto uri={R.image} height={280} />
+          <RecipePhoto uri={R.image} title={R.title} height={280} />
           <View style={{ position: 'absolute', top: insets.top + 8, left: 16 }}><RoundBtn icon="arrow_back" size={42} bg="#fff" onPress={() => goBack()} label="Back" /></View>
           <View style={{ position: 'absolute', top: insets.top + 8, right: 16 }}><RoundBtn icon={saved ? 'bookmark' : 'bookmark_border'} size={42} bg="#fff" onPress={toggleSave} label={saved ? 'Unsave' : 'Save'} /></View>
         </View>

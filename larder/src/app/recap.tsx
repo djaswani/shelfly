@@ -63,8 +63,8 @@ export default function Recap() {
         <T size={15} color={C.muted} style={{ lineHeight: 22 }}>{r.tossedNames.length ? joinNames(r.tossedNames) : 'Nothing yet this month. Nice.'}</T>
       </View>
       <View style={{ backgroundColor: C.ink, borderRadius: 22, padding: 20, gap: 12 }}>
-        <T display size={22} color="#fff">Larder Plus</T>
-        <T size={15} color="#E3DDD3" style={{ lineHeight: 22 }}>{s.plus ? 'Plus is active. Thanks for supporting Larder.' : `You saved about $${saved} this month. A year of Plus is $24.99.`}</T>
+        <T display size={22} color="#fff">Shelfly Plus</T>
+        <T size={15} color="#E3DDD3" style={{ lineHeight: 22 }}>{s.plus ? 'Plus is active. Thanks for supporting Shelfly.' : `You saved about $${saved} this month. A year of Plus is $24.99.`}</T>
         <Btn onPress={() => router.push('/plus')} style={{ height: 48, borderRadius: 14, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
           <T size={15} w={700}>{s.plus ? 'Manage plan' : 'Try free for 30 days'}</T>
         </Btn>

@@ -6,14 +6,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DateControl } from '../components/DateControl';
 import { Sheet } from '../components/Sheet';
 import { BigBtn, Btn, Icon, Pill, RoundBtn, rowBorder, S, Screen, Segment, shadow, T } from '../components/ui';
-import { isoIn, nextMonthStart } from '../dates';
+import { isoIn } from '../dates';
 import { QUICK } from '../data/seed';
 import { capitalize, defDays, locName, merge, mk } from '../logic';
 import { useStore } from '../store';
 import { C } from '../theme';
 
 export default function Add() {
-  const { s, set, showToast } = useStore();
+  const { s, set, showToast, openReceipt } = useStore();
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ leftover?: string }>();
   const [sel, setSel] = useState<Record<string, number>>({}); // name → days until expiry
@@ -38,10 +38,6 @@ export default function Add() {
     set((st) => ({ ...st, items: names.reduce((items, n) => merge(items, n, loc, 1, sel[n]), st.items) }));
     showToast(`Added ${names.length} item${names.length > 1 ? 's' : ''}`);
     goBack();
-  };
-  const openReceipt = () => {
-    if (!s.plus && s.receiptLeft <= 0) return showToast(`Receipt scans reset ${nextMonthStart()}`);
-    router.push('/receipt');
   };
 
   return (

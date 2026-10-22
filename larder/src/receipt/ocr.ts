@@ -1,5 +1,5 @@
 // On-device text recognition (Apple Vision on iOS, Google ML Kit on Android) via expo-text-extractor.
-// Free, offline, and the photo never leaves the phone. Needs the Larder development build:
+// Free, offline, and the photo never leaves the phone. Needs the Shelfly development build:
 // Expo Go and web don't include the native module, so `ocrAvailable` is false there.
 import { requireOptionalNativeModule } from 'expo';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
@@ -21,7 +21,7 @@ async function normalize(uri: string, width: number): Promise<string> {
 }
 
 export async function readReceiptText(uri: string, width = 0): Promise<string> {
-  if (!native) throw new Error('Text recognition needs the Larder development build.');
+  if (!native) throw new Error('Text recognition needs the Shelfly development build.');
   const lines = await native.extractTextFromImage(await normalize(uri, width));
   return lines.join('\n');
 }

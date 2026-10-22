@@ -24,7 +24,7 @@ export default function Settings() {
 
   const toggleDigest = async () => {
     if (!s.digest && (await notificationsAllowed(true)) === 'denied' && Platform.OS !== 'web') {
-      showToast('Turn on notifications for Larder in iOS Settings');
+      showToast('Turn on notifications for Shelfly in iOS Settings');
     }
     set((st) => ({ ...st, digest: !st.digest }));
   };
@@ -51,7 +51,7 @@ export default function Settings() {
         {people.map((m, i) => (
           <View key={m.key} style={[{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 16 }, rowBorder(i)]}>
             <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: i ? C.warnSoft : C.greenSoft, alignItems: 'center', justifyContent: 'center' }}>
-              <T size={13} w={700} color={i ? C.warn : C.green}>{m.i}</T>
+              {m.i ? <T size={13} w={700} color={i ? C.warn : C.green}>{m.i}</T> : <Icon name="person" size={20} color={C.green} />}
             </View>
             <T w={500} style={{ flex: 1 }}>{m.n}</T>
             <T size={14} color={C.muted}>{m.role}</T>
@@ -96,11 +96,11 @@ export default function Settings() {
       <T size={12.5} color={C.faint} style={{ marginTop: -12, paddingHorizontal: 4 }}>A morning heads-up about food to use that day or the next. Skipped when there&apos;s nothing to say.</T>
 
       <Group label="Your data">
-        <Row onPress={() => shareFile('larder-export.csv', toCsv(s), 'text/csv')}>
+        <Row onPress={() => shareFile('shelfly-export.csv', toCsv(s), 'text/csv')}>
           <T style={{ flex: 1 }}>Export as CSV</T>
           <Icon name="download" size={20} color={C.muted} />
         </Row>
-        <Row onPress={() => shareFile('larder-export.json', toJson(s), 'application/json')} border>
+        <Row onPress={() => shareFile('shelfly-export.json', toJson(s), 'application/json')} border>
           <T style={{ flex: 1 }}>Export as JSON</T>
           <Icon name="download" size={20} color={C.muted} />
         </Row>
@@ -116,7 +116,7 @@ export default function Settings() {
           <Icon name="chevron_right" color={C.faint} />
         </Row>
         <Row onPress={() => router.push('/plus')} border>
-          <T style={{ flex: 1 }}>Larder Plus</T>
+          <T style={{ flex: 1 }}>Shelfly Plus</T>
           <T size={14} color={C.muted}>{s.plus ? 'Active' : ''}</T>
           <Icon name="chevron_right" color={C.faint} />
         </Row>
@@ -129,6 +129,11 @@ export default function Settings() {
       {__DEV__ && (
         <Btn onPress={() => { reset(); showToast('Demo data restored'); }} style={{ height: 50, borderRadius: 16, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
           <T w={600} color={C.muted}>Reset demo data (dev only)</T>
+        </Btn>
+      )}
+      {__DEV__ && (
+        <Btn onPress={() => { set((st) => ({ ...st, onboarded: false })); router.replace('/onboarding'); }} style={{ height: 50, borderRadius: 16, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
+          <T w={600} color={C.muted}>Replay onboarding (dev only)</T>
         </Btn>
       )}
       {timeOpen && <TimePickerSheet title="Digest time" minutes={s.digestTime} onPick={(m) => set((st) => ({ ...st, digestTime: m }))} onClose={() => setTimeOpen(false)} />}

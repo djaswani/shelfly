@@ -61,7 +61,7 @@ export default function Sweep() {
     <View style={{ flex: 1, backgroundColor: C.bg, paddingTop: insets.top + 12 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20 }}>
         <RoundBtn icon="close" onPress={close} label="Close" />
-        <T w={600}>Sunday sweep</T>
+        <T w={600}>Quick check</T>
         <T size={14} w={600} color={C.muted} style={{ width: 40, textAlign: 'right' }}>{Math.min(idx + 1, total)}/{total}</T>
       </View>
       <View style={{ marginTop: 16, marginHorizontal: 20, height: 4, borderRadius: 2, backgroundColor: C.meterOff, overflow: 'hidden' }}>

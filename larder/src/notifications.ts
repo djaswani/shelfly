@@ -1,7 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { isoIn, fromISO } from './dates';
-import { Item } from './data/types';
+import { Item, Recipe } from './data/types';
 import { digestFor } from './digestText';
 
 const DAYS_AHEAD = 7;
@@ -22,7 +22,7 @@ export async function notificationsAllowed(ask: boolean): Promise<'granted' | 'd
 
 // Local notifications only: one per morning for the next week, written from today's inventory.
 // Called again whenever the inventory or digest settings change, so the text stays current.
-export async function scheduleDigest(items: Item[], on: boolean, minutes: number) {
+export async function scheduleDigest(items: Item[], recipes: Recipe[], on: boolean, minutes: number) {
   if (!supported) return;
   await Notifications.cancelAllScheduledNotificationsAsync();
   if (!on || (await notificationsAllowed(false)) !== 'granted') return;
@@ -31,7 +31,7 @@ export async function scheduleDigest(items: Item[], on: boolean, minutes: number
     const at = fromISO(isoIn(day));
     at.setHours(Math.floor(minutes / 60), minutes % 60);
     if (at.getTime() <= now) continue;
-    const msg = digestFor(items, day);
+    const msg = digestFor(items, day, recipes);
     if (!msg) continue;
     await Notifications.scheduleNotificationAsync({
       content: { title: msg.title, body: msg.body, data: { url: '/' } },

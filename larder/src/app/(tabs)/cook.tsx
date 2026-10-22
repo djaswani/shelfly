@@ -14,7 +14,7 @@ type Filter = 'expiring' | 'quick' | 'saved';
 const FILTERS: [Filter, string][] = [['expiring', 'Use it up'], ['quick', 'Quickest'], ['saved', 'Saved']];
 
 export default function Cook() {
-  const { s, set, showToast } = useStore();
+  const { s, set, showToast, openGate } = useStore();
   const [filter, setFilter] = useState<Filter>('expiring');
   const [busy, setBusy] = useState<'ideas' | 'link' | null>(null);
   const [link, setLink] = useState<{ url: string; err: string } | null>(null);
@@ -25,7 +25,7 @@ export default function Cook() {
 
   const genIdeas = async () => {
     if (busy) return;
-    if (!s.plus && s.ideasLeft <= 0) return showToast('New ideas reset Monday');
+    if (!s.plus && s.ideasLeft <= 0) return openGate('ideas');
     setBusy('ideas');
     try {
       const ideas = await fetchIdeas(s);
@@ -62,7 +62,7 @@ export default function Cook() {
       const err = e instanceof NoRecipeError
         ? 'We couldn’t find a recipe on that page. Try the link to the recipe itself.'
         : Platform.OS === 'web'
-          ? 'That site doesn’t let browsers read its pages. Try it in the Larder app.'
+          ? 'That site doesn’t let browsers read its pages. Try it in the Shelfly app.'
           : 'Couldn’t open that page. Check the link and your connection.';
       setLink((l) => (l ? { ...l, err } : l));
     } finally {
@@ -85,7 +85,7 @@ export default function Cook() {
           return (
             <Btn key={x.r.id} onPress={() => router.push(`/recipe/${x.r.id}`)} style={{ backgroundColor: '#fff', borderRadius: 20, overflow: 'hidden' }}>
               <View>
-                <RecipePhoto uri={x.r.image} height={136} />
+                <RecipePhoto uri={x.r.image} title={x.r.title} height={136} />
                 {isIdea(x.r) && !s.saved[x.r.id] && (
                   <View style={{ position: 'absolute', top: 12, left: 12, backgroundColor: '#fff', paddingVertical: 5, paddingHorizontal: 10, borderRadius: 12 }}>
                     <T size={12} w={600}>New idea</T>

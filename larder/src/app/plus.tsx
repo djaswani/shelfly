@@ -21,14 +21,14 @@ export default function Plus() {
   const buy = () => {
     if (!__DEV__) return showToast('Purchases aren’t set up yet');
     set((st) => ({ ...st, plus: true }));
-    showToast('Larder Plus is on (test mode)');
+    showToast('Shelfly Plus is on (test mode)');
     goBack();
   };
 
   return (
     <Screen gap={18} bottom={40}>
       <RoundBtn icon="close" onPress={() => goBack()} label="Close" />
-      <H1>Larder Plus</H1>
+      <H1>Shelfly Plus</H1>
       <View style={{ gap: 12 }}>
         {FEATURES.map((f) => (
           <View key={f} style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>

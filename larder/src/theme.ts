@@ -1,4 +1,4 @@
-// Design tokens from design/Larder.dc.html
+// Design tokens from design/Shelfly.dc.html
 export const C = {
   bg: '#F6F3ED',
   card: '#FFFFFF',

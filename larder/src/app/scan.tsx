@@ -104,7 +104,7 @@ export default function Scan() {
         </View>
         {!isWeb && permission && !permission.granted && (
           <View style={{ alignItems: 'center', gap: 12, paddingHorizontal: 32 }}>
-            <T size={15} color="#E3DDD3" style={{ textAlign: 'center' }}>Larder needs the camera to read barcodes.</T>
+            <T size={15} color="#E3DDD3" style={{ textAlign: 'center' }}>Shelfly needs the camera to read barcodes.</T>
             <Btn onPress={requestPermission} style={{ height: 44, paddingHorizontal: 20, borderRadius: 22, backgroundColor: '#fff', justifyContent: 'center' }}>
               <T size={15} w={600}>Allow camera</T>
             </Btn>
@@ -134,7 +134,7 @@ export default function Scan() {
           ) : (
             <View style={{ gap: 8 }}>
               <T size={18} w={600}>Not in the product database</T>
-              <T size={14} color={C.muted}>Barcode {notFound}. Name it once and Larder will add it.</T>
+              <T size={14} color={C.muted}>Barcode {notFound}. Name it once and Shelfly will add it.</T>
               <TextInput value={manualName} onChangeText={setManualName} autoFocus placeholder="What is it?" placeholderTextColor={C.faint} style={[S.input, { flex: 0, height: 48, borderRadius: 14, backgroundColor: '#fff', paddingHorizontal: 14 }]} />
             </View>
           )}

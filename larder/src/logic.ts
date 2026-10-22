@@ -1,4 +1,4 @@
-// Pure inventory logic ported from design/Larder.dc.html. Every function takes and returns plain data.
+// Pure inventory logic ported from design/Shelfly.dc.html. Every function takes and returns plain data.
 import { daysFromToday, isoIn, monthKey } from './dates';
 import { LIFE, QUICK } from './data/seed';
 import { EventKind, ExpirySource, Item, Level, LEVELS, ListRow, Persisted } from './data/types';

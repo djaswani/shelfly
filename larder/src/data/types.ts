@@ -91,4 +91,7 @@ export type Persisted = {
   recipes: Recipe[];
   receiptMemory?: ReceiptMemory;
   events?: Ev[];
+  onboarded?: boolean; // false until the first-run setup is done
+  householdName?: string;
+  people?: number;
 };

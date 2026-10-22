@@ -1,3 +1,4 @@
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Share, TextInput, View } from 'react-native';
 import { BigBtn, Btn, Card, H1, Icon, RoundBtn, rowBorder, S, Screen, SectionLabel, T } from '../components/ui';
@@ -10,6 +11,7 @@ const field = [S.input, { flex: 0, height: 50, borderRadius: 14, backgroundColor
 
 export default function Account() {
   const sync = useSync();
+  const { code } = useLocalSearchParams<{ code?: string }>();
   return (
     <Screen gap={20} bottom={48}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -18,7 +20,7 @@ export default function Account() {
       </View>
       {!sync.enabled ? (
         <T color={C.muted}>Sync isn’t set up in this build. Add the Supabase settings to .env and rebuild.</T>
-      ) : !sync.session ? <SignIn /> : !sync.household ? <SetUp /> : <Joined />}
+      ) : !sync.session ? <SignIn /> : !sync.household ? <SetUp invite={code} /> : <Joined />}
     </Screen>
   );
 }
@@ -62,12 +64,12 @@ function SignIn() {
   );
 }
 
-function SetUp() {
+function SetUp({ invite }: { invite?: string }) {
   const sync = useSync();
   const { s } = useStore();
   const { busy, run } = useBusy();
-  const [name, setName] = useState(s.members[0]?.n ?? '');
-  const [code, setCode] = useState('');
+  const [name, setName] = useState(s.members[0]?.n === 'You' ? '' : s.members[0]?.n ?? '');
+  const [code, setCode] = useState(invite ?? '');
 
   return (
     <View style={{ gap: 18 }}>
@@ -78,11 +80,11 @@ function SetUp() {
       <Card style={{ padding: 16, gap: 10 }}>
         <T w={600}>Start a household</T>
         <T size={14} color={C.muted} style={{ lineHeight: 20 }}>Your current kitchen becomes the shared one. You’ll get a code to invite someone.</T>
-        <BigBtn title="Start household" onPress={() => run(() => sync.createHousehold(`${name.trim() || 'Our'}’s kitchen`, name), 'Household created')} />
+        <BigBtn title="Start household" onPress={() => run(() => sync.createHousehold(s.householdName || `${name.trim() || 'Our'}’s kitchen`, name), 'Household created')} />
       </Card>
       <Card style={{ padding: 16, gap: 10 }}>
         <T w={600}>Join a household</T>
-        <T size={14} color={C.muted} style={{ lineHeight: 20 }}>Enter the code from someone’s Larder. Their kitchen replaces what’s on this phone.</T>
+        <T size={14} color={C.muted} style={{ lineHeight: 20 }}>Enter the code from someone’s Shelfly. Their kitchen replaces what’s on this phone.</T>
         <TextInput value={code} onChangeText={(t) => setCode(t.toUpperCase())} placeholder="Invite code" placeholderTextColor={C.faint} autoCapitalize="characters" autoCorrect={false} maxLength={6} style={[field, { backgroundColor: C.bg, letterSpacing: 4, fontSize: 20 }]} />
         <BigBtn title="Join" bg={C.ink} onPress={() => code.trim().length >= 6 && run(() => sync.joinHousehold(code, name), 'Joined household')} />
       </Card>
@@ -101,7 +103,7 @@ function Joined() {
     : sync.status === 'syncing' ? 'Syncing…'
     : sync.lastSynced ? `Synced at ${sync.lastSynced.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : 'Synced';
 
-  const invite = () => Share.share({ message: `Join my kitchen on Larder with code ${h.invite_code}` });
+  const invite = () => Share.share({ message: `Join my kitchen on Shelfly with code ${h.invite_code}` });
 
   return (
     <View style={{ gap: 18 }}>

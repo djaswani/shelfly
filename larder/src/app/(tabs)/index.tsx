@@ -9,22 +9,23 @@ import { useStore } from '../../store';
 import { C } from '../../theme';
 
 export default function Home() {
-  const { s } = useStore();
+  const { s, openReceipt } = useStore();
   const recap = monthRecap(s);
   const useSoon = s.items
     .filter((i) => itemDays(i) != null && itemDays(i)! <= 3 && !isOut(i))
     .sort((a, b) => itemDays(a)! - itemDays(b)!);
   const sweepCount = Math.min(SWEEP_MAX, s.items.filter(needsSweep).length);
-  const tonight = visibleRecipes(s).sort(byExpiring)[0];
+  // Only suggest dinner when at least half of it is already in the kitchen.
+  const tonight = visibleRecipes(s).filter((x) => x.haveN >= x.ings.length / 2).sort(byExpiring)[0];
   const t = tonight && cardText(tonight);
-  const initials = s.members[0]?.i ?? 'Me';
+  const initials = s.members[0]?.i;
 
   return (
     <Screen gap={24}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <T size={15} w={500} color={C.muted}>{todayHeading()}</T>
         <Btn onPress={() => router.push('/settings')} accessibilityLabel="Settings" style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: C.greenSoft, alignItems: 'center', justifyContent: 'center' }}>
-          <T size={14} w={700} color={C.green}>{initials}</T>
+          {initials ? <T size={14} w={700} color={C.green}>{initials}</T> : <Icon name="person" size={22} color={C.green} />}
         </Btn>
       </View>
 
@@ -46,8 +47,8 @@ export default function Home() {
             <Icon name="swipe" size={24} color="#fff" />
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
-            <T size={17} w={600} color="#fff">Sunday sweep</T>
-            <T size={14} color={C.greenText} style={{ marginTop: 2 }}>{sweepCount} item{sweepCount === 1 ? '' : 's'} to check</T>
+            <T size={17} w={600} color="#fff">Quick check</T>
+            <T size={14} color={C.greenText} style={{ marginTop: 2 }}>{sweepCount} thing{sweepCount === 1 ? '' : 's'} to double-check · about a minute</T>
           </View>
           <Btn onPress={() => router.push('/sweep')} style={{ height: 40, paddingHorizontal: 18, borderRadius: 20, backgroundColor: '#fff', justifyContent: 'center' }}>
             <T size={15} w={700} color={C.green}>Start</T>
@@ -59,13 +60,32 @@ export default function Home() {
         <View style={{ gap: 12 }}>
           <T display size={22}>Tonight</T>
           <Btn onPress={() => router.push(`/recipe/${tonight.r.id}`)} style={{ backgroundColor: '#fff', borderRadius: 20, padding: 12, flexDirection: 'row', gap: 14, alignItems: 'center' }}>
-            <RecipePhoto uri={tonight.r.image} height={92} width={92} radius={14} />
+            <RecipePhoto uri={tonight.r.image} title={tonight.r.title} height={92} width={92} radius={14} />
             <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
               <T size={17} w={600}>{tonight.r.title}</T>
               <T size={13.5} color={C.muted}>{t.meta}</T>
               {!!t.expText && <T size={13.5} w={500} color={C.warn}>{t.expText}</T>}
             </View>
           </Btn>
+        </View>
+      )}
+
+      {s.items.length < 8 && (
+        <View style={{ backgroundColor: '#fff', borderRadius: 20, padding: 16, gap: 12 }}>
+          <View style={{ gap: 3 }}>
+            <T w={600}>Fill your kitchen in a minute</T>
+            <T size={13.5} color={C.muted} style={{ lineHeight: 19 }}>Snap your last grocery receipt and Shelfly adds everything on it, with good-until dates.</T>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <Btn onPress={openReceipt} style={{ flex: 1, height: 44, borderRadius: 14, backgroundColor: C.green, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <Icon name="receipt_long" size={19} color="#fff" />
+              <T size={15} w={600} color="#fff">Scan receipt</T>
+            </Btn>
+            <Btn onPress={() => router.push('/scan')} style={{ flex: 1, height: 44, borderRadius: 14, backgroundColor: C.btnSoft, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <Icon name="barcode_scanner" size={19} />
+              <T size={15} w={600}>Barcode</T>
+            </Btn>
+          </View>
         </View>
       )}
 

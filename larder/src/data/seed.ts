@@ -1,4 +1,4 @@
-// Static content and demo data from design/Larder.dc.html.
+// Static content and demo data from design/Shelfly.dc.html.
 import { isoIn, monthKey, weekKey } from '../dates';
 import { Ev, Item, Persisted, Recipe } from './types';
 

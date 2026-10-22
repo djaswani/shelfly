@@ -39,7 +39,7 @@ function Capture({ onText }: { onText: (text: string) => boolean }) {
   const camera = useRef<CameraView>(null);
   const [reading, setReading] = useState(false);
   const isWeb = Platform.OS === 'web';
-  const unavailable = isWeb ? 'Receipt scanning works in the Larder phone app.' : 'Receipt scanning needs the Larder app build (not Expo Go).';
+  const unavailable = isWeb ? 'Receipt scanning works in the Shelfly phone app.' : 'Receipt scanning needs the Shelfly app build (not Expo Go).';
 
   const read = async (uri: string, width?: number) => {
     setReading(true);
@@ -87,7 +87,7 @@ function Capture({ onText }: { onText: (text: string) => boolean }) {
             </T>
           ) : permission && !permission.granted ? (
             <>
-              <T size={15} color="#E3DDD3" style={{ textAlign: 'center' }}>Larder needs the camera to read receipts.</T>
+              <T size={15} color="#E3DDD3" style={{ textAlign: 'center' }}>Shelfly needs the camera to read receipts.</T>
               <Btn onPress={requestPermission} style={{ height: 44, paddingHorizontal: 20, borderRadius: 22, backgroundColor: '#fff', justifyContent: 'center' }}>
                 <T size={15} w={600}>Allow camera</T>
               </Btn>
@@ -150,7 +150,7 @@ function Review({ parsed, onBack }: { parsed: ParsedReceipt; onBack: () => void 
                     <TextInput value={r.name} onChangeText={(v) => upd(r.id, { name: v })} onSubmitEditing={() => upd(r.id, { editing: false, unsure: false })} onBlur={() => upd(r.id, { editing: false, unsure: false })} autoFocus
                       style={{ fontSize: 16, fontFamily: 'Figtree_600SemiBold', color: C.ink, borderBottomWidth: 1.5, borderBottomColor: C.green, paddingVertical: 2 }} />
                   ) : (
-                    // Tap a name to fix it; Larder remembers the fix for this receipt line.
+                    // Tap a name to fix it; Shelfly remembers the fix for this receipt line.
                     <Btn onPress={() => upd(r.id, { editing: true })} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                       <T w={600} color={r.on ? C.ink : C.faint} style={{ flexShrink: 1 }}>{r.name}</T>
                       <Icon name="edit" size={14} color={C.faint} />

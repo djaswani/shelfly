@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ItemSheet, Toast } from '../components/ItemSheet';
+import { PlusGate } from '../components/PlusGate';
 import { notificationsAllowed, scheduleDigest } from '../notifications';
 import { StoreProvider, useStore } from '../store';
 import { SyncProvider } from '../sync/SyncProvider';
@@ -45,6 +46,7 @@ function Gate() {
     <>
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: C.bg } }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="onboarding" options={{ animation: 'fade', gestureEnabled: false }} />
         <Stack.Screen name="add" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="scan" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
         <Stack.Screen name="receipt" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
@@ -52,6 +54,7 @@ function Gate() {
         <Stack.Screen name="plus" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
       </Stack>
       <ItemSheet />
+      <PlusGate />
       <Toast />
       <DigestScheduler />
     </>
@@ -61,15 +64,15 @@ function Gate() {
 // Keeps the next week of digest notifications in step with the inventory.
 function DigestScheduler() {
   const { s } = useStore();
-  const { items, digest, digestTime } = s;
+  const { items, recipes, digest, digestTime } = s;
   useEffect(() => {
     const t = setTimeout(() => {
       // The digest is on by default, so ask for permission once, shortly after the first launch.
       (digest ? notificationsAllowed(true) : Promise.resolve())
-        .then(() => scheduleDigest(items, digest, digestTime))
+        .then(() => scheduleDigest(items, recipes, digest, digestTime))
         .catch(() => {});
     }, 1500);
     return () => clearTimeout(t);
-  }, [items, digest, digestTime]);
+  }, [items, recipes, digest, digestTime]);
   return null;
 }

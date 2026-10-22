@@ -133,21 +133,30 @@ export function Screen({ children, gap = 16, bottom = 28, style }: { children: R
   );
 }
 
-export function PhotoPlaceholder({ height, width, label = 'dish photo', radius = 0, style }: {
-  height: number; width?: number; label?: string; radius?: number; style?: StyleProp<ViewStyle>;
-}) {
-  // Diagonal stripes from the design are approximated with a flat tint until real photos exist.
+// Stand-in art for recipes without a photo: a warm tint and an icon guessed from the title.
+const DISH_ICONS: [RegExp, keyof typeof MaterialCommunityIcons.glyphMap][] = [
+  [/quesadilla|taco|burrito|tortilla|wrap/i, 'taco'], [/chili|soup|stew|curry|broth/i, 'pot-steam-outline'],
+  [/chicken|turkey/i, 'food-drumstick-outline'], [/pasta|spaghetti|noodle|lasagna|mac/i, 'pasta'],
+  [/rice|bowl|risotto/i, 'rice'], [/salad|greens|slaw/i, 'leaf'], [/toast|bread|sandwich|sourdough/i, 'bread-slice-outline'],
+  [/egg|omelet|frittata/i, 'egg-fried'], [/parfait|yogurt|berry|strawberr|smoothie/i, 'fruit-cherries'],
+  [/fish|salmon|tuna|shrimp/i, 'fish'], [/beef|steak|burger|meatball/i, 'food-steak'], [/pizza/i, 'pizza'], [/cake|cookie|muffin|pie/i, 'cupcake'],
+];
+const DISH_TINTS = [['#E1ECE4', '#2D6A4B'], ['#F3E3D9', '#B5461F'], ['#EDE7DC', '#736B60']];
+
+function DishArt({ title = '', height, width, radius }: { title?: string; height: number; width?: number; radius: number }) {
+  const icon = DISH_ICONS.find(([re]) => re.test(title))?.[1] ?? 'silverware-fork-knife';
+  const [bg, fg] = DISH_TINTS[[...title].reduce((h, c) => h + c.charCodeAt(0), 0) % DISH_TINTS.length];
   return (
-    <View style={[{ height, width, borderRadius: radius, backgroundColor: C.photoA, alignItems: 'center', justifyContent: 'center' }, style]}>
-      <T size={10} w={500} color={C.photoText} style={{ fontFamily: undefined }}>{label}</T>
+    <View style={{ height, width, borderRadius: radius, backgroundColor: bg, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+      <MaterialCommunityIcons name={icon} size={Math.min(64, height * 0.42)} color={fg} style={{ opacity: 0.85 }} />
     </View>
   );
 }
 
-// A recipe's photo, or the placeholder when it has none or it fails to load (offline, dead link).
-export function RecipePhoto({ uri, height, width, radius = 0 }: { uri?: string; height: number; width?: number; radius?: number }) {
+// A recipe's photo, or title-based art when it has none or it fails to load (offline, dead link).
+export function RecipePhoto({ uri, title, height, width, radius = 0 }: { uri?: string; title?: string; height: number; width?: number; radius?: number }) {
   const [failed, setFailed] = useState<string | null>(null);
-  if (!uri || failed === uri) return <PhotoPlaceholder height={height} width={width} radius={radius} />;
+  if (!uri || failed === uri) return <DishArt title={title} height={height} width={width} radius={radius} />;
   return (
     <Image source={{ uri }} onError={() => setFailed(uri)} resizeMode="cover" accessibilityIgnoresInvertColors
       style={{ height, width: width ?? '100%', borderRadius: radius, backgroundColor: C.photoA }} />

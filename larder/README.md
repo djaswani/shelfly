@@ -1,4 +1,4 @@
-# Larder
+# Shelfly (working name; formerly Larder)
 
 Home food inventory app. Spec: `../design/` (Claude Design export) and the build plan in the design project.
 
