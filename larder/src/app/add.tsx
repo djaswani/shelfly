@@ -8,7 +8,7 @@ import { Sheet } from '../components/Sheet';
 import { BigBtn, Btn, Icon, Pill, RoundBtn, rowBorder, S, Screen, Segment, shadow, T } from '../components/ui';
 import { isoIn } from '../dates';
 import { QUICK } from '../data/seed';
-import { capitalize, defDays, locName, merge, mk } from '../logic';
+import { buy, capitalize, defDays, locName, mk } from '../logic';
 import { useStore } from '../store';
 import { C } from '../theme';
 
@@ -35,7 +35,7 @@ export default function Add() {
     setText('');
   };
   const commit = () => {
-    set((st) => ({ ...st, items: names.reduce((items, n) => merge(items, n, loc, 1, sel[n]), st.items) }));
+    set((st) => names.reduce((acc, n) => buy(acc, n, loc, 1, sel[n]), st));
     showToast(`Added ${names.length} item${names.length > 1 ? 's' : ''}`);
     goBack();
   };

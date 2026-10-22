@@ -5,7 +5,7 @@ import { ActivityIndicator, Image, Platform, Pressable, TextInput, View } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DateControl } from '../components/DateControl';
 import { BigBtn, Btn, Pill, RoundBtn, S, T } from '../components/ui';
-import { defDays, merge } from '../logic';
+import { buy, defDays } from '../logic';
 import { lookupBarcode, Product } from '../openFoodFacts';
 import { useStore } from '../store';
 import { C } from '../theme';
@@ -66,7 +66,7 @@ export default function Scan() {
   const commit = (next: boolean) => {
     const name = found ? found.name : manualName.trim();
     if (!name) return;
-    set((st) => ({ ...st, items: merge(st.items, name, loc, 1, days) }));
+    set((st) => buy(st, name, loc, 1, days));
     showToast(name + ' added');
     if (next) reset(); else closeAll();
   };

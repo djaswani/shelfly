@@ -1,7 +1,7 @@
 // Pure inventory logic ported from design/Shelfly.dc.html. Every function takes and returns plain data.
 import { daysFromToday, isoIn, monthKey } from './dates';
 import { LIFE, QUICK } from './data/seed';
-import { EventKind, ExpirySource, Item, Level, LEVELS, ListRow, Persisted } from './data/types';
+import { Buys, EventKind, ExpirySource, Item, Level, LEVELS, ListRow, Persisted } from './data/types';
 import { openedLifeDays, shelfLifeDays } from './foodkeeper';
 import { C } from './theme';
 
@@ -84,9 +84,10 @@ export const PROBABLY = 0.5;
 export const SWEEP = 0.3;
 export const SWEEP_MAX = 15;
 
-// τ: how long this food typically lasts. Shelf life is the stand-in until we learn real
-// household cadence from purchase history (v1.1). Staples without a date drift slowly.
+// τ: how long this food typically lasts here. Once purchase history gives a cadence (`every`,
+// see buy()) that wins; until then shelf life stands in, and staples without a date drift slowly.
 export function tau(it: Item): number {
+  if (it.every != null) return Math.min(30, Math.max(4, it.every));
   if (it.expires == null) return 30;
   return Math.min(30, Math.max(4, defDays(it.name, it.loc)));
 }
@@ -128,6 +129,67 @@ export function merge(items: Item[], name: string, loc: string, qty?: number, da
     out.push(mk(name, loc, days != null ? { expires: isoIn(days), src } : undefined));
   }
   return out;
+}
+
+// ── Purchases (repeat-purchase inference, build plan v1.1) ───
+const BUYS_PER_FOOD = 12;
+const BUYS_FOODS = 300;
+
+const buyKey = (name: string) => name.trim().toLowerCase();
+
+// Record one purchase of `name` today; a second buy on the same day doesn't count again.
+export function recordBuy(buys: Buys, name: string, today = isoIn(0)): Buys {
+  const k = buyKey(name);
+  const prev = buys[k] ?? [];
+  if (prev[prev.length - 1] === today) return buys;
+  const next: Buys = { ...buys, [k]: [...prev, today].slice(-BUYS_PER_FOOD) };
+  const keys = Object.keys(next);
+  if (keys.length <= BUYS_FOODS) return next;
+  // Forget the foods bought longest ago.
+  const last = (key: string) => next[key][next[key].length - 1];
+  keys.sort((a, b) => (last(a) < last(b) ? -1 : 1)).slice(0, keys.length - BUYS_FOODS).forEach((key) => delete next[key]);
+  return next;
+}
+
+// Median days between purchases, once there are at least two.
+export function cadence(dates: string[] | undefined): number | null {
+  if (!dates || dates.length < 2) return null;
+  const gaps = dates.slice(1).map((d, i) => (daysFromToday(d) ?? 0) - (daysFromToday(dates[i]) ?? 0)).sort((a, b) => a - b);
+  const m = gaps.length >> 1;
+  return gaps.length % 2 ? gaps[m] : (gaps[m - 1] + gaps[m]) / 2;
+}
+
+// Buying something you already have means the old stock was probably used up or nearly so.
+const probablyUsed = (it: Item) => !isOut(it) && ((it.count == null && it.level === 'Low') || confidence(it) < PROBABLY);
+
+// A purchase from a receipt, the barcode scanner, Add food or the list: merge() plus what it tells us.
+// Topping up a Low or doubtful row logs it as used (rows the user marked Out were logged then),
+// and the purchase date feeds the food's restock cadence.
+export function buy(s: Persisted, name: string, loc: string, qty?: number, days?: number | null): Persisted {
+  const old = s.items.find((i) => same(i.name, name) && i.loc === loc && !i.leftover);
+  const out = old && probablyUsed(old) ? logEvent(s, 'used', old.name) : s;
+  const buys = recordBuy(out.buys ?? {}, name);
+  const every = cadence(buys[buyKey(name)]);
+  let items = merge(out.items, name, loc, qty, days);
+  if (every != null) items = items.map((i) => (same(i.name, name) && i.loc === loc && !i.leftover ? { ...i, every } : i));
+  return { ...out, items, buys };
+}
+
+// "about 2 weeks" for a cadence in days.
+export function everyText(d: number): string {
+  const r = Math.max(1, Math.round(d));
+  if (r === 1) return 'about a day';
+  if (r < 14) return `about ${r} days`;
+  if (r < 60) return `about ${Math.round(r / 7)} weeks`;
+  const m = Math.round(r / 30);
+  return m === 1 ? 'about a month' : `about ${m} months`;
+}
+
+// Foods whose learned cadence says they're probably running out, for the List tab.
+export function restockDue(s: Persisted): Item[] {
+  return s.items.filter((i) => !i.leftover && i.every != null && (s.buys?.[buyKey(i.name)]?.length ?? 0) >= 2
+    && !isOut(i) && !(i.count == null && i.level === 'Low') && confidence(i) < PROBABLY
+    && !s.list.some((r) => same(r.name, i.name)));
 }
 
 export function addToList(s: Persisted, name: string, aisle?: string): Persisted {

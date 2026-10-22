@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { TextInput, View } from 'react-native';
 import { Btn, Card, CheckCircle, H1, Icon, rowBorder, S, Screen, SectionLabel, shadow, T } from '../../components/ui';
 import { AISLE_ORDER } from '../../data/seed';
-import { addToList, aisleOf, capitalize, isOut, locForAisle, merge, same } from '../../logic';
+import { addToList, aisleOf, buy, capitalize, everyText, isOut, locForAisle, restockDue, same } from '../../logic';
 import { useStore } from '../../store';
 import { C } from '../../theme';
 
@@ -25,15 +25,16 @@ export default function List() {
     showToast(`Added ${sugg.length} to list`);
   };
 
+  const due = restockDue(s);
+
   const groups = AISLE_ORDER.map((a) => ({ aisle: a, rows: s.list.filter((r) => (AISLE_ORDER.includes(r.aisle) ? r.aisle : 'Other') === a) })).filter((g) => g.rows.length);
   const checked = s.list.filter((r) => r.checked);
 
   const toggle = (id: string) => set((st) => ({ ...st, list: st.list.map((l) => (l.id === id ? { ...l, checked: !l.checked } : l)) }));
   const putAway = () => {
-    set((st) => {
-      let items = st.items;
-      st.list.filter((r) => r.checked && r.aisle !== 'Household').forEach((r) => { items = merge(items, r.name, locForAisle(r.aisle), parseInt(r.qty ?? '') || 1); });
-      return { ...st, items, list: st.list.filter((r) => !r.checked) };
+    set((st0) => {
+      const st = st0.list.filter((r) => r.checked && r.aisle !== 'Household').reduce((acc, r) => buy(acc, r.name, locForAisle(r.aisle), parseInt(r.qty ?? '') || 1), st0);
+      return { ...st, list: st.list.filter((r) => !r.checked) };
     });
     showToast(`Put away ${checked.length} item${checked.length > 1 ? 's' : ''}`);
   };
@@ -60,6 +61,25 @@ export default function List() {
                 <View key={i.id} style={[{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingLeft: 16, paddingRight: 10 }, rowBorder(n)]}>
                   <T w={500} style={{ flex: 1 }}>{i.name}</T>
                   <T size={13} w={600} color={C.warn}>{isOut(i) ? 'Out' : 'Low'}</T>
+                  <Btn onPress={() => set((st) => addToList(st, i.name, i.aisle))} accessibilityLabel={`Add ${i.name}`} style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: C.greenSoft, alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon name="add" size={20} color={C.green} />
+                  </Btn>
+                </View>
+              ))}
+            </Card>
+          </View>
+        )}
+
+        {due.length > 0 && (
+          <View style={{ gap: 8 }}>
+            <SectionLabel>Probably running out</SectionLabel>
+            <Card>
+              {due.map((i, n) => (
+                <View key={i.id} style={[{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, paddingLeft: 16, paddingRight: 10 }, rowBorder(n)]}>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <T w={500}>{i.name}</T>
+                    <T size={13} color={C.muted} style={{ marginTop: 2 }}>Usually lasts {everyText(i.every!)}</T>
+                  </View>
                   <Btn onPress={() => set((st) => addToList(st, i.name, i.aisle))} accessibilityLabel={`Add ${i.name}`} style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: C.greenSoft, alignItems: 'center', justifyContent: 'center' }}>
                     <Icon name="add" size={20} color={C.green} />
                   </Btn>

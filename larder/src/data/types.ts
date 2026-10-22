@@ -23,6 +23,7 @@ export type Item = {
   aisle?: string;
   checkedAt?: string; // YYYY-MM-DD, last time the user confirmed it
   confAt?: string; // YYYY-MM-DD the conf value was set; decay runs from here (defaults to checkedAt)
+  every?: number; // learned days between purchases (median gap), used as τ once known
 };
 
 export type ListRow = { id: string; name: string; qty?: string; aisle: string; checked?: boolean };
@@ -70,6 +71,9 @@ export type Stats = { used: number; tossed: number; cooked: number };
 export type EventKind = 'used' | 'tossed' | 'cooked';
 export type Ev = { kind: EventKind; name: string; at: string }; // at: YYYY-MM-DD
 
+// Purchase dates per food (lowercased name → YYYY-MM-DD, oldest first), for restock cadence. Local for now.
+export type Buys = Record<string, string[]>;
+
 export type Plan = 'year' | 'month' | 'life';
 
 export type Persisted = {
@@ -91,6 +95,7 @@ export type Persisted = {
   recipes: Recipe[];
   receiptMemory?: ReceiptMemory;
   events?: Ev[];
+  buys?: Buys;
   onboarded?: boolean; // false until the first-run setup is done
   householdName?: string;
   people?: number;

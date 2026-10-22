@@ -42,7 +42,7 @@ export function demoItems(): Item[] {
     I({ id: 'chili', name: 'Turkey chili', short: 'chili', loc: 'fridge', level: 'Some', days: 2, leftover: true, madeAgo: 3 }),
     I({ id: 'cilantro', name: 'Cilantro', loc: 'fridge', level: 'Low', days: 3, conf: 0.4, checked: 6, aisle: 'Produce' }),
     I({ id: 'milk', name: 'Milk', loc: 'fridge', level: 'Low', days: 4, opened: true, src: 'Label', conf: 0.35, checked: 5, aisle: 'Dairy' }),
-    I({ id: 'yogurt', name: 'Greek yogurt', loc: 'fridge', level: 'Full', days: 9, src: 'Label', aisle: 'Dairy' }),
+    I({ id: 'yogurt', name: 'Greek yogurt', loc: 'fridge', level: 'Full', days: 9, src: 'Label', conf: 0.45, every: 7, aisle: 'Dairy' }),
     I({ id: 'salsa', name: 'Salsa', loc: 'fridge', level: 'Low', days: 5, opened: true, conf: 0.3, checked: 12, aisle: 'Pantry' }),
     I({ id: 'eggs', name: 'Eggs', loc: 'fridge', count: 7, unit: 'eggs', days: 19, src: 'Label', conf: 0.6, aisle: 'Dairy' }),
     I({ id: 'cheddar', name: 'Cheddar', loc: 'fridge', level: 'Some', days: 18, opened: true, conf: 0.45, checked: 9, aisle: 'Dairy' }),
@@ -82,6 +82,8 @@ export function demoState(): Persisted {
     digest: true,
     digestTime: 8 * 60,
     events: demoEvents(),
+    // Bought weekly, so it shows under "Probably running out" on the List tab.
+    buys: { 'greek yogurt': [isoIn(-21), isoIn(-14), isoIn(-7)] },
     plus: false,
     receiptLeft: 4,
     receiptMonth: monthKey(),

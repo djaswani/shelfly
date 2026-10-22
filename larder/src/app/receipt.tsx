@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DateControl } from '../components/DateControl';
 import { BigBtn, Btn, Card, CheckCircle, Icon, RoundBtn, Screen, T } from '../components/ui';
 import { ReceiptRow } from '../data/types';
-import { locName, merge, same } from '../logic';
+import { buy, locName, same } from '../logic';
 import { readReceiptText, ocrAvailable } from '../receipt/ocr';
 import { learnFrom, parseReceipt, ParsedReceipt } from '../receipt/parse';
 import { useStore } from '../store';
@@ -118,11 +118,10 @@ function Review({ parsed, onBack }: { parsed: ParsedReceipt; onBack: () => void 
   const sub = [parsed.store, parsed.date].filter(Boolean).join(' · ') || 'Check the names, then add';
 
   const add = () => {
-    set((st) => {
-      let items = st.items;
-      on.forEach((r) => { items = merge(items, r.name, r.loc, r.qty, r.days); });
+    set((st0) => {
+      const st = on.reduce((acc, r) => buy(acc, r.name, r.loc, r.qty, r.days), st0);
       return {
-        ...st, items,
+        ...st,
         list: st.list.filter((l) => !on.some((r) => same(r.name, l.name))),
         receiptLeft: st.plus ? st.receiptLeft : Math.max(0, st.receiptLeft - 1),
         receiptMemory: learnFrom(rows, st.receiptMemory ?? {}),
