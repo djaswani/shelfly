@@ -1,4 +1,4 @@
--- Larder walking skeleton: households, members, and synced inventory.
+-- Shelfly walking skeleton: households, members, and synced inventory.
 -- Run once in the Supabase SQL editor (or `supabase db push`). Safe to re-run: everything is idempotent.
 
 -- ── Households & members ──────────────────────────────────────

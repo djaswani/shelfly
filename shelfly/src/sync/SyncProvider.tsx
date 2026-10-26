@@ -1,5 +1,6 @@
 // Sign-in, household membership, and two-way sync of items, list rows and locations.
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getWithOldKey } from '../storage';
 import type { RealtimeChannel, Session } from '@supabase/supabase-js';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
@@ -9,7 +10,8 @@ import { supabase } from './client';
 import { signInLink } from './links';
 import { applyRow, Coll, COLLECTIONS, COLLS, diff, emptySnapshot, mergeAll, Row, Snapshot, stable } from './engine';
 
-const KEY = 'larder.sync.v1';
+const KEY = 'shelfly.sync.v1';
+const OLD_KEY = 'larder.sync.v1'; // before the rename
 
 export type Household = { id: string; name: string; invite_code: string; plan: string };
 export type Member = { user_id: string; display_name: string; role: string };
@@ -166,7 +168,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
       if (!m) { setHousehold(null); setStatus('off'); return; }
       const { data: h } = await supabase.from('households').select('id, name, invite_code, plan').eq('id', m.household_id).single();
       if (cancelled || !h) return;
-      const saved = JSON.parse((await AsyncStorage.getItem(KEY)) ?? 'null');
+      const saved = JSON.parse((await getWithOldKey(KEY, OLD_KEY)) ?? 'null');
       // Same household as last time: keep the snapshot so offline edits survive. Otherwise start fresh.
       const sameHousehold = saved?.householdId === h.id;
       snap.current = sameHousehold ? saved.snap : emptySnapshot();

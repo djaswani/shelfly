@@ -22,7 +22,7 @@ input,button{font-family:inherit}
 <div style="min-height:100vh;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:56px;padding:40px 24px;box-sizing:border-box">
 <sc-if value="{{ showIndex }}" hint-placeholder-val="{{ true }}">
 <div style="width:190px;display:flex;flex-direction:column;gap:2px">
-<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;margin:0 0 16px 12px">Larder</div>
+<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;margin:0 0 16px 12px">Shelfly</div>
 <sc-for list="{{ screens }}" as="sc" hint-placeholder-count="16">
 <button onClick="{{ sc.go }}" style="text-align:left;border:0;background:{{ sc.bg }};color:{{ sc.c }};font-size:14px;font-weight:500;padding:8px 12px;border-radius:10px;cursor:pointer">{{ sc.label }}</button>
 </sc-for>
@@ -594,7 +594,7 @@ input,button{font-family:inherit}
 </div>
 <div style="background:#fff;border-radius:20px;overflow:hidden">
 <div onClick="{{ openRecap }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer"><span style="flex:1;font-size:16px">Monthly recap</span><i style="font-size:22px;color:#A39A8E">chevron_right</i></div>
-<div onClick="{{ openPlus }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC;cursor:pointer"><span style="flex:1;font-size:16px">Larder Plus</span><span style="font-size:14px;color:#736B60">{{ planLabel }}</span><i style="font-size:22px;color:#A39A8E">chevron_right</i></div>
+<div onClick="{{ openPlus }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC;cursor:pointer"><span style="flex:1;font-size:16px">Shelfly Plus</span><span style="font-size:14px;color:#736B60">{{ planLabel }}</span><i style="font-size:22px;color:#A39A8E">chevron_right</i></div>
 <div onClick="{{ faq }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid #ECE6DC;cursor:pointer"><span style="flex:1;font-size:16px">Help &amp; FAQ</span><i style="font-size:22px;color:#A39A8E">chevron_right</i></div>
 </div>
 <button onClick="{{ signOut }}" style="height:50px;border-radius:16px;border:0;background:#fff;color:#B5461F;font-size:16px;font-weight:600;cursor:pointer">Sign out</button>
@@ -633,7 +633,7 @@ input,button{font-family:inherit}
 <div style="font-size:15px;color:#736B60;line-height:1.5">Cilantro, sour cream, half a loaf of sourdough</div>
 </div>
 <div style="background:#1E1A16;color:#fff;border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px">
-<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600;letter-spacing:-0.01em">Larder Plus</div>
+<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:22px;font-weight:600;letter-spacing:-0.01em">Shelfly Plus</div>
 <div style="font-size:15px;line-height:1.5;color:#E3DDD3">{{ plusPitch }}</div>
 <button onClick="{{ openPlus }}" style="height:48px;border-radius:14px;border:0;background:#fff;color:#1E1A16;font-size:15px;font-weight:700;cursor:pointer">{{ plusCta }}</button>
 </div>
@@ -642,9 +642,9 @@ input,button{font-family:inherit}
 
 <!-- PLUS -->
 <sc-if value="{{ ovPlus }}" hint-placeholder-val="{{ false }}">
-<div data-screen-label="Larder Plus" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;overflow-y:auto;padding:62px 20px 40px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:18px">
+<div data-screen-label="Shelfly Plus" style="position:absolute;inset:0;z-index:30;background:#F6F3ED;overflow-y:auto;padding:62px 20px 40px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:18px">
 <button onClick="{{ back }}" style="width:40px;height:40px;border-radius:50%;border:0;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;cursor:pointer"><i style="font-size:22px">close</i></button>
-<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.025em">Larder Plus</h1>
+<h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:600;letter-spacing:-0.025em">Shelfly Plus</h1>
 <div style="display:flex;flex-direction:column;gap:12px">
 <div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Unlimited receipt scans</div>
 <div style="display:flex;gap:12px;align-items:center;font-size:16px"><i style="font-size:22px;color:#2D6A4B">check</i>Add food from a fridge photo</div>
@@ -751,7 +751,7 @@ input,button{font-family:inherit}
 </span>
 </div>
 <div style="display:flex;flex-direction:column;gap:10px;padding:2px 2px 0">
-<span style="font-size:13px;font-weight:600;color:#736B60">Larder Plus also includes</span>
+<span style="font-size:13px;font-weight:600;color:#736B60">Shelfly Plus also includes</span>
 <sc-for list="{{ gate.perks }}" as="pk" hint-placeholder-count="3">
 <div style="display:flex;gap:10px;align-items:center;font-size:15.5px;font-weight:{{ pk.w }}"><i style="font-size:20px;color:#2D6A4B">check</i>{{ pk.t }}</div>
 </sc-for>
@@ -786,7 +786,7 @@ input,button{font-family:inherit}
 <sc-if value="{{ ob0 }}" hint-placeholder-val="{{ true }}">
 <div style="height:388px;border-radius:28px;background:repeating-linear-gradient(135deg,#EDE7DC 0 12px,#E5DED1 12px 24px);display:flex;align-items:center;justify-content:center;font:500 11px ui-monospace,Menlo,monospace;color:#8A8174">open pantry shelf photo</div>
 <div style="display:flex;flex-direction:column;gap:10px">
-<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:46px;font-weight:700;letter-spacing:-0.035em;line-height:1">Larder</div>
+<div style="font-family:'Bricolage Grotesque',sans-serif;font-size:46px;font-weight:700;letter-spacing:-0.035em;line-height:1">Shelfly</div>
 <p style="margin:0;font-size:17px;line-height:1.5;color:#3D3730;text-wrap:pretty">Know what's in your kitchen, use it before it turns, and shop for what's actually missing.</p>
 </div>
 </sc-if>
@@ -864,7 +864,7 @@ input,button{font-family:inherit}
 <div style="background:#fff;border-radius:20px;padding:14px;display:flex;gap:12px;box-shadow:0 4px 16px rgba(30,26,22,.06)">
 <span style="width:38px;height:38px;border-radius:10px;background:#2D6A4B;color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><i style="font-size:22px">kitchen</i></span>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
-<div style="display:flex;justify-content:space-between;font-size:13px;color:#736B60"><span style="font-weight:600">Larder</span><span>{{ digestTime }}</span></div>
+<div style="display:flex;justify-content:space-between;font-size:13px;color:#736B60"><span style="font-weight:600">Shelfly</span><span>{{ digestTime }}</span></div>
 <div style="font-size:15px;font-weight:600">Use the spinach and chicken today</div>
 <div style="font-size:14px;color:#3D3730;line-height:1.4">Creamy spinach chicken uses both. 30 min.</div>
 </div>
@@ -881,7 +881,7 @@ input,button{font-family:inherit}
 <span style="width:38px;height:38px;border-radius:50%;background:#EAE4DA;color:#1E1A16;display:flex;align-items:center;justify-content:center;flex:none"><i style="font-size:22px">swipe</i></span>
 <div style="display:flex;flex-direction:column;gap:3px">
 <span style="font-size:16px;font-weight:600">Plus a one-minute check on Sundays</span>
-<span style="font-size:14.5px;line-height:1.5;color:#736B60;text-wrap:pretty">Larder asks about a few things it isn't sure of. Swipe right if you still have it, left if it's gone.</span>
+<span style="font-size:14.5px;line-height:1.5;color:#736B60;text-wrap:pretty">Shelfly asks about a few things it isn't sure of. Swipe right if you still have it, left if it's gone.</span>
 </div>
 </div>
 </sc-if>
@@ -1287,7 +1287,7 @@ class Component extends DCLogic {
 
     // screens index
     const curKey = s.ob != null ? 'onboard' : s.gate ? 'gate' : s.sheetId ? 'item' : s.overlay === 'recipe' && s.deductOpen ? 'deduct' : s.overlay === 'receipt' ? (s.rStep === 'confirm' ? 'review' : 'receipt') : s.overlay === 'add' && s.leftoverOpen ? 'leftover' : s.overlay || s.tab;
-    const screens = [['onboard', 'Onboarding'], ['home', 'Home'], ['kitchen', 'Kitchen'], ['item', 'Item details'], ['add', 'Add food'], ['scan', 'Barcode scan'], ['receipt', 'Receipt scan'], ['review', 'Receipt review'], ['leftover', 'Leftovers'], ['sweep', 'Sunday sweep'], ['list', 'Shopping list'], ['cook', 'Cook'], ['recipe', 'Recipe'], ['deduct', 'I cooked this'], ['settings', 'Settings'], ['recap', 'Monthly recap'], ['plus', 'Larder Plus'], ['gate', 'Plus limit']]
+    const screens = [['onboard', 'Onboarding'], ['home', 'Home'], ['kitchen', 'Kitchen'], ['item', 'Item details'], ['add', 'Add food'], ['scan', 'Barcode scan'], ['receipt', 'Receipt scan'], ['review', 'Receipt review'], ['leftover', 'Leftovers'], ['sweep', 'Sunday sweep'], ['list', 'Shopping list'], ['cook', 'Cook'], ['recipe', 'Recipe'], ['deduct', 'I cooked this'], ['settings', 'Settings'], ['recap', 'Monthly recap'], ['plus', 'Shelfly Plus'], ['gate', 'Plus limit']]
       .map(([k, label]) => ({ label, bg: k === curKey ? INK : 'transparent', c: k === curKey ? '#fff' : INK, go: () => this.jump(k) }));
 
     // item sheet
@@ -1399,17 +1399,17 @@ class Component extends DCLogic {
       settingsAddLoc: () => this.setState({ overlay: null, stack: [], tab: 'kitchen', addingLoc: true, newLoc: '' }),
       toggleDigest: () => this.setState({ digest: !s.digest }), digestBg: s.digest ? GREEN : '#D9D1C4', digestKnob: s.digest ? '22px' : '2px', digestOp: s.digest ? 1 : 0.4,
       cycleDigest: () => s.digest && this.setState({ digestTime: (s.digestTime + 1) % 3 }), digestTime: ['8:00 AM', '12:00 PM', '5:30 PM'][s.digestTime],
-      exportCsv: () => this.toast('larder-export.csv saved'), exportJson: () => this.toast('larder-export.json saved'),
+      exportCsv: () => this.toast('shelfly-export.csv saved'), exportJson: () => this.toast('shelfly-export.json saved'),
       planLabel: s.plus ? 'Active' : '', faq: () => this.toast('Opening help'), signOut: () => this.toast('Signed out'),
       ovRecap: s.overlay === 'recap', savedAmt: '$' + saved$, stUsed: s.stats.used, stTossed: s.stats.tossed, stCooked: s.stats.cooked,
-      plusPitch: s.plus ? 'Plus is active. Thanks for supporting Larder.' : `You saved about $${saved$} this month. A year of Plus is $24.99.`, plusCta: s.plus ? 'Manage plan' : 'Try free for 30 days',
+      plusPitch: s.plus ? 'Plus is active. Thanks for supporting Shelfly.' : `You saved about $${saved$} this month. A year of Plus is $24.99.`, plusCta: s.plus ? 'Manage plan' : 'Try free for 30 days',
       ovPlus: s.overlay === 'plus', plans, buyText: s.plan === 'life' ? 'Buy lifetime' : 'Start 30-day free trial',
       buyPlus: () => { const r = s.resume, b = { plus: true, resume: null, gate: null };
         if (r === 'receipt') this.setState({ ...b, overlay: 'receipt', stack: ['add'], rStep: 'camera' });
         else if (r === 'ideas') this.setState({ ...b, overlay: null, stack: [], tab: 'cook', genShown: 1, cookFilter: 'expiring' });
         else if (r === 'members') this.setState({ ...b, overlay: 'settings', stack: [] });
         else this.setState({ ...b, overlay: null, stack: [] });
-        this.toast('Larder Plus is on'); },
+        this.toast('Shelfly Plus is on'); },
       hasGate: !!gd, gate, closeGate: () => this.setState({ gate: null }),
       gateTry: () => this.setState((st) => ({ gate: null, resume: st.gate, stack: st.overlay ? [...st.stack, st.overlay] : st.stack, overlay: 'plus', sheetId: null })),
       gateAlt: () => { const g = s.gate;

@@ -1,14 +1,14 @@
 {
   "expo": {
     "name": "Shelfly",
-    "slug": "larder",
+    "slug": "shelfly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.djaswani.larder"
+      "bundleIdentifier": "com.djaswani.shelfly"
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.djaswani.larder"
+      "package": "com.djaswani.shelfly"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -62,7 +62,7 @@
         }
       ]
     ],
-    "scheme": "larder",
+    "scheme": "shelfly",
     "experiments": {
       "typedRoutes": true
     }

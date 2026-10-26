@@ -34,24 +34,22 @@ Receipt reading runs entirely on the device (Apple Vision text recognition), so 
 
 | Path | What's there |
 | --- | --- |
-| `larder/` | The app. Setup and run instructions are in [`larder/README.md`](larder/README.md) |
-| `larder/src/app/` | Screens (Home, Kitchen, List, Cook, onboarding, receipt, barcode, recipes, settings) |
-| `larder/src/logic.ts` | Inventory rules: merging purchases, confidence decay, Quick check, restock cadence |
-| `larder/src/receipt/` | On-device receipt reading and parsing |
-| `larder/src/sync/` | Sign-in, households and live sync |
-| `larder/supabase/` | Database schema and security rules |
-| `larder/scripts/` | Data pipeline, self-checks, and the demo kitchen loader |
+| `shelfly/` | The app. Setup and run instructions are in [`shelfly/README.md`](shelfly/README.md) |
+| `shelfly/src/app/` | Screens (Home, Kitchen, List, Cook, onboarding, receipt, barcode, recipes, settings) |
+| `shelfly/src/logic.ts` | Inventory rules: merging purchases, confidence decay, Quick check, restock cadence |
+| `shelfly/src/receipt/` | On-device receipt reading and parsing |
+| `shelfly/src/sync/` | Sign-in, households and live sync |
+| `shelfly/supabase/` | Database schema and security rules |
+| `shelfly/scripts/` | Data pipeline, self-checks, and the demo kitchen loader |
 | `design/` | The original design prototype |
-
-The `larder/` folder keeps the app's original working name.
 
 ## Run it
 
 ```bash
-cd larder
+cd shelfly
 npm install
 cp .env.example .env    # add your Supabase URL and publishable key
 npx expo run:ios        # builds and opens the app in the iOS Simulator
 ```
 
-Requires a Mac with Xcode. See [`larder/README.md`](larder/README.md) for the full setup, including the one-time Supabase step.
+Requires a Mac with Xcode. See [`shelfly/README.md`](shelfly/README.md) for the full setup, including the one-time Supabase step.

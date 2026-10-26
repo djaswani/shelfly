@@ -6,8 +6,10 @@ import { demoState } from './data/seed';
 import { Persisted } from './data/types';
 import type { GateKind } from './components/PlusGate';
 import { refreshAllowances } from './logic';
+import { getWithOldKey } from './storage';
 
-const KEY = 'larder.state.v1';
+const KEY = 'shelfly.state.v1';
+const OLD_KEY = 'larder.state.v1'; // before the rename
 
 type Store = {
   s: Persisted;
@@ -34,7 +36,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
-    AsyncStorage.getItem(KEY)
+    getWithOldKey(KEY, OLD_KEY)
       .then((raw) => {
         // New installs start with onboarding; saves from before onboarding existed skip it.
         const loaded: Persisted = raw ? { onboarded: true, ...JSON.parse(raw) } : { ...demoState(), onboarded: false };
