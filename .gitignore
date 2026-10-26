@@ -4,3 +4,10 @@
 .env
 .env.*
 !.env.example
+
+# Claude Code local config
+.claude/
+
+# Screen recordings
+*.mov
+*.mp4

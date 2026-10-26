@@ -40,23 +40,26 @@ Sync design: one row per item / list row / location (`data` jsonb), soft deletes
 | Feature | Status |
 | --- | --- |
 | All 16 design screens, navigation, item sheet, toasts | Built |
-| Inventory, list, sweep, cook-to-deduct, leftovers, locations | Built, saved on device |
+| Inventory, list, Quick check, cook-to-deduct, leftovers, locations | Built, saved on device |
 | Barcode scan → Open Food Facts lookup | Built (camera on phone; typed barcode on web) |
 | CSV / JSON export | Built (share sheet on phone, download on web) |
-| Receipt reading | Built, free and on-device: Apple Vision / ML Kit text recognition (`src/receipt/ocr.ts`) → rule-based parser with an abbreviation dictionary and FoodKeeper matching (`src/receipt/parse.ts`). Corrections are remembered per receipt line. Typing/pasting text works everywhere, including web |
+| Receipt reading | Built, free and on-device: Apple Vision / ML Kit text recognition (`src/receipt/ocr.ts`) → rule-based parser with an abbreviation dictionary and FoodKeeper matching (`src/receipt/parse.ts`). Corrections are remembered per receipt line. Needs the phone app (photo or camera) |
 | Recipes | Built, saved on device (`Persisted.recipes`; not synced to the household yet). Ingredients match the kitchen by item link or by name (`src/ingredients.ts`: "4 boneless chicken thighs" → Chicken thighs). Photos, source credit, save, remove |
 | Add a recipe from a link | Built, free: reads the page's schema.org Recipe JSON-LD (`src/recipeImport.ts`). Works with most recipe sites; some block apps or (on web) browsers |
 | "New ideas" recipes | Built, free: TheMealDB searched by what expires soonest plus a couple of staples, ranked "uses what expires soonest" (`src/mealdb.ts`). 5 refreshes a week on the free plan. Uses TheMealDB's development key "1"; **a public release needs a TheMealDB supporter key** |
 | Expiry estimates | USDA FoodKeeper (612 foods, `src/foodkeeper.ts`); unmatched foods fall back to a rough table and are labelled "Rough estimate" |
-| Confidence decay | Built: c(t) = e^(-t/τ), τ from shelf life (4–30 days); "Probably" below 0.5, Sunday sweep below 0.3 (max 15 items) |
+| Confidence decay | Built: c(t) = e^(-t/τ), τ from shelf life (4–30 days); "Probably" below 0.5, Quick check below 0.3 (max 15 items). After 2+ purchases, the learned restock cadence replaces τ |
 | Accounts, household sharing, sync, invites | Built (`src/sync/`): email-code sign-in, create/join a household by 6-letter code (free plan: 2 members), live two-way sync of items, list and locations with offline catch-up. Needs the one-time Supabase setup below |
-| Larder Plus purchases | Not started. Needs RevenueCat + store accounts (dev builds just flip a flag) |
-| Daily digest notification | Setting only. Needs expo-notifications |
-| Monthly recap weekly chart / tossed list | Design placeholders until there's an events log |
+| Shelfly Plus purchases | Not started. Needs RevenueCat + store accounts (dev builds just flip a flag). The limit sheet and Plus screen are built |
+| Daily digest notification | Built: local notifications each morning for the next week, naming food to use and a recipe that uses it (`src/notifications.ts`, `src/digestText.ts`) |
+| Monthly recap | Built from the events log (used, tossed, cooked). Saved locally, not synced yet |
+| Share to Shelfly | Built: iOS share extension; recipe sites plus TikTok/Instagram/YouTube captions (`src/shareImport.ts`) |
+| Onboarding | Built: household, places, starting food, reminders, or join with an invite code |
+| Demo kitchen | `./scripts/load-showcase.sh` loads a stocked kitchen into the simulator app for recordings |
 
 ## Layout
 
-- `src/app/` routes: `(tabs)/` Home, Kitchen, List, Cook; modals `add`, `scan`, `receipt`, `sweep`, `recipe/[id]`, `settings`, `recap`, `plus`
+- `src/app/` routes: `(tabs)/` Home, Kitchen, List, Cook; `onboarding`, `import`, `help`, `account`; modals `add`, `scan`, `receipt`, `sweep` (Quick check), `recipe/[id]`, `settings`, `recap`, `plus`
 - `src/logic.ts` inventory rules ported from the design (merge, sweep, levels)
 - `src/recipes.ts` "uses what expires soonest" ranking; `src/ingredients.ts`, `src/recipeImport.ts`, `src/mealdb.ts`
   recipe parsing, link import and ideas (self-check: `npx tsx scripts/check-recipes.ts [--live] [--page <url>]`)
