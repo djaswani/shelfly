@@ -165,7 +165,7 @@ export default function RecipeScreen() {
             <T display size={26}>Update kitchen</T>
             <T size={15} color={C.muted} style={{ marginTop: 4 }}>{R.title}</T>
           </View>
-          <ScrollView style={{ backgroundColor: '#fff', borderRadius: 20, flexGrow: 0 }}>
+          <ScrollView style={{ backgroundColor: '#fff', borderRadius: 20, flexGrow: 0, flexShrink: 1 }}>
             {x.ings.filter((g) => g.have && g.it && g.it.id in deduct).map((g, i) => {
               const it = g.it!;
               const v = deduct[it.id];
