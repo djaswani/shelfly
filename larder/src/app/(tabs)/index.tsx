@@ -8,6 +8,9 @@ import { byExpiring, cardText, visibleRecipes } from '../../recipes';
 import { useStore } from '../../store';
 import { C } from '../../theme';
 
+// Home shows the most urgent few; "See all" opens the full kitchen.
+const USE_SOON_MAX = 5;
+
 export default function Home() {
   const { s, openReceipt } = useStore();
   const recap = monthRecap(s);
@@ -35,7 +38,7 @@ export default function Home() {
           <Btn onPress={() => router.navigate('/kitchen')}><T size={15} w={600} color={C.green}>See all</T></Btn>
         </View>
         <Card>
-          {useSoon.length ? useSoon.map((it, i) => <ItemRow key={it.id} it={it} index={i} withLoc />) : (
+          {useSoon.length ? useSoon.slice(0, USE_SOON_MAX).map((it, i) => <ItemRow key={it.id} it={it} index={i} withLoc />) : (
             <T color={C.muted} style={{ padding: 16 }}>Nothing expiring in the next 3 days.</T>
           )}
         </Card>
